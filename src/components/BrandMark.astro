@@ -13,44 +13,80 @@ const base = import.meta.env.BASE_URL;
   class:list={['brand-lockup', { 'brand-lockup--compact': compact }]}
   aria-label={`${brand.name} — ${brand.person}`}
 >
-  <img
-    class="brand-lockup__mark"
-    src={`${base}branding/nepomka-favicon.png`}
-    width="64"
-    height="64"
-    alt=""
-    aria-hidden="true"
-  />
-  <span class="brand-lockup__text">
-    <strong>{brand.name}</strong>
-    <small>{brand.person}</small>
-  </span>
+  {
+    compact ? (
+      <>
+        <img
+          class="brand-lockup__mark"
+          src={`${base}branding/nepomka-favicon.png`}
+          width="64"
+          height="64"
+          alt=""
+          aria-hidden="true"
+        />
+        <span class="brand-lockup__text">
+          <strong>{brand.name}</strong>
+        </span>
+      </>
+    ) : (
+      <img
+        class="brand-lockup__logo"
+        data-brand-logo
+        src={`${base}branding/nepomka-logo.webp`}
+        width="480"
+        height="160"
+        alt={brand.name}
+        loading="eager"
+        decoding="async"
+      />
+    )
+  }
 </span>
 
 <style>
   .brand-lockup {
-    gap: 10px;
+    display: inline-flex;
+    align-items: center;
   }
 
-  .brand-lockup__mark {
+  .brand-lockup__logo {
     display: block;
+    width: 156px;
+    height: auto;
     object-fit: contain;
   }
 
-  .brand-lockup__text strong {
+  .brand-lockup--compact {
+    gap: 10px;
+  }
+
+  .brand-lockup--compact .brand-lockup__mark {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .brand-lockup--compact .brand-lockup__text {
+    display: block;
+    line-height: 1;
+  }
+
+  .brand-lockup--compact .brand-lockup__text strong {
+    font-size: 14px;
     letter-spacing: 0.025em;
     text-transform: none;
   }
 
-  .brand-lockup__text small {
-    max-width: 220px;
-    letter-spacing: 0.055em;
-    white-space: nowrap;
+  @media (max-width: 760px) {
+    .brand-lockup__logo {
+      width: 138px;
+    }
   }
 
-  @media (max-width: 760px) {
-    .brand-lockup__text small {
-      display: none;
+  @media (max-width: 440px) {
+    .brand-lockup__logo {
+      width: 126px;
     }
   }
 </style>

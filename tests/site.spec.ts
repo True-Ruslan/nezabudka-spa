@@ -10,7 +10,7 @@ test('presents Danil under the Nepomka brand without fabricated proof', async ({
     page.getByRole('heading', { level: 1, name: 'Непомнящий Данил Александрович' }),
   ).toBeVisible();
   await expect(page.getByText('Автомобили без догадок.', { exact: true })).toBeVisible();
-  await expect(page.getByText('Nepomka', { exact: true }).first()).toBeVisible();
+  await expect(page.locator('[data-brand-logo]')).toBeVisible();
   await expect(page.getByText('NEZABUDKA', { exact: true })).toHaveCount(0);
   await expect(page.getByText('DANIL NEPOMNYASHCHIY', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Состояние автомобиля', { exact: true })).toBeVisible();
@@ -32,8 +32,14 @@ test('presents Danil under the Nepomka brand without fabricated proof', async ({
   await expect(page.getByText(/шаблон кейса/i)).toHaveCount(0);
 });
 
-test('loads the approved Nepomka branding and hero portrait', async ({ page }) => {
+test('loads the exact approved Nepomka brand assets and hero portrait', async ({ page }) => {
   await page.goto('./');
+
+  const brandLogo = page.locator('[data-brand-logo]');
+  await expect(brandLogo).toBeVisible();
+  await expect(brandLogo).toHaveAttribute('src', /\/branding\/nepomka-logo\.webp$/);
+  await expect(brandLogo).toHaveAttribute('alt', 'Nepomka');
+  expect(await brandLogo.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
 
   const heroPortrait = page.locator('[data-hero-portrait]');
   await expect(heroPortrait).toBeVisible();
@@ -49,6 +55,7 @@ test('loads the approved Nepomka branding and hero portrait', async ({ page }) =
     'href',
     '/nezabudka-spa/branding/nepomka-apple-touch-icon.png',
   );
+  await expect(page).toHaveTitle(/Nepomka.*Непомнящий Данил Александрович/);
 });
 
 test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
@@ -89,6 +96,7 @@ test('publishes canonical metadata for the GitHub Pages project path', async ({ 
     'content',
     'https://true-ruslan.github.io/nezabudka-spa/',
   );
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Nepomka');
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     'content',
     'https://true-ruslan.github.io/nezabudka-spa/branding/danil-hero.webp',
