@@ -32,7 +32,7 @@ test('presents Danil under the Nepomka brand without fabricated proof', async ({
   await expect(page.getByText(/шаблон кейса/i)).toHaveCount(0);
 });
 
-test('loads the exact approved Nepomka brand assets and hero portrait', async ({ page }) => {
+test('uses a high-resolution portrait-shaped hero asset without aggressive lateral cropping', async ({ page }) => {
   await page.goto('./');
 
   const brandLogo = page.locator('[data-brand-logo]');
@@ -45,10 +45,19 @@ test('loads the exact approved Nepomka brand assets and hero portrait', async ({
   await expect(heroPortrait).toBeVisible();
   await expect(heroPortrait).toHaveAttribute('src', /\/branding\/danil-hero\.webp$/);
   await expect(heroPortrait).toHaveAttribute('alt', 'Непомнящий Данил Александрович');
-  expect(await heroPortrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
-  expect(await heroPortrait.evaluate((image: HTMLImageElement) => getComputedStyle(image).objectPosition)).toBe(
-    '100% 50%',
-  );
+
+  const portraitMetrics = await heroPortrait.evaluate((image: HTMLImageElement) => ({
+    naturalWidth: image.naturalWidth,
+    naturalHeight: image.naturalHeight,
+    objectFit: getComputedStyle(image).objectFit,
+    objectPosition: getComputedStyle(image).objectPosition,
+  }));
+
+  expect(portraitMetrics.naturalWidth).toBeGreaterThanOrEqual(1100);
+  expect(portraitMetrics.naturalHeight).toBeGreaterThanOrEqual(1400);
+  expect(portraitMetrics.naturalWidth / portraitMetrics.naturalHeight).toBeLessThan(0.85);
+  expect(portraitMetrics.objectFit).toBe('cover');
+  expect(portraitMetrics.objectPosition).toBe('50% 50%');
 
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
     'href',

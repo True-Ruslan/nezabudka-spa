@@ -19,7 +19,7 @@ jobs:
 
       - name: Verify approved Nepomka assets
         run: |
-          test "$(git hash-object public/branding/danil-hero.webp)" = "4fa42dd84195bc3cc0b9b51c42103c74713a14e0"
+          test "$(git hash-object public/branding/danil-hero.webp)" = "680f6b87d4cde66aebca0fcfedca9ab3c07c48af"
           test "$(git hash-object public/branding/nepomka-logo.webp)" = "9ee4c20c66b334e824d219df7ea4d5919d9cbe43"
 
       - name: Setup Node
