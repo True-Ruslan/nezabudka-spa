@@ -127,13 +127,16 @@ test('mobile menu closes with Escape and returns focus to its button', async ({ 
   test.skip(!isMobile, 'mobile-only interaction');
   await page.goto('./');
 
-  const button = page.getByRole('button', { name: 'Открыть меню' });
+  const button = page.locator('[data-menu-button]');
+  await expect(button).toHaveAccessibleName('Открыть меню');
   await button.click();
   await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await expect(button).toHaveAccessibleName('Закрыть меню');
 
   await page.keyboard.press('Escape');
 
   await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(button).toHaveAccessibleName('Открыть меню');
   await expect(button).toBeFocused();
 });
 
