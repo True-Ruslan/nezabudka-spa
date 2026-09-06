@@ -11,6 +11,21 @@
 - [x] GitHub Pages CI/CD
 - [x] Подготовка custom domain
 
+## v0.1.1 — Production hardening
+
+- [x] Зафиксировать npm dependency graph через `package-lock.json`
+- [x] Перевести CI/deploy на `npm ci`
+- [x] Добавить статические detail routes для `publish: true` кейсов
+- [x] Не публиковать `case-template.md`
+- [x] Добавить custom 404
+- [x] Закрывать mobile navigation по Escape с восстановлением focus
+- [x] Добавить static-output verifier для generated links/assets/canonical
+- [x] Добавить negative regression-check verifier-а
+- [x] Проверять project-Pages и custom-domain build modes
+- [x] Добавить post-deploy HTTP smoke главной страницы
+- [x] Добавить production проверку настоящего HTTP 404
+- [x] Документировать безопасный workflow добавления контента
+
 ## v0.2 — Verified content
 
 - [ ] Добавить подтверждённые контакты Данила
