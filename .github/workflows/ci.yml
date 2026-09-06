@@ -73,7 +73,7 @@ jobs:
 
       - name: Prove published case route generation
         run: |
-          cat > src/content/cases/ci-route-smoke.md <<'EOF'
+          cat > src/content/cases/case-ci-route-smoke.md <<'EOF'
           ---
           title: "CI route smoke"
           vehicle: "CI fixture"
@@ -90,16 +90,16 @@ jobs:
 
           npm run build
           npm run verify:build
-          test -f dist/cases/ci-route-smoke/index.html
-          grep -q 'CI route smoke' dist/cases/ci-route-smoke/index.html
-          grep -q 'https://true-ruslan.github.io/nezabudka-spa/cases/ci-route-smoke/' dist/cases/ci-route-smoke/index.html
-          grep -q '/nezabudka-spa/cases/ci-route-smoke/' dist/index.html
+          test -f dist/cases/case-ci-route-smoke/index.html
+          grep -q 'CI route smoke' dist/cases/case-ci-route-smoke/index.html
+          grep -q 'https://true-ruslan.github.io/nezabudka-spa/cases/case-ci-route-smoke/' dist/cases/case-ci-route-smoke/index.html
+          grep -q '/nezabudka-spa/cases/case-ci-route-smoke/' dist/index.html
           test ! -e dist/cases/case-template/index.html
 
-          rm src/content/cases/ci-route-smoke.md
+          rm src/content/cases/case-ci-route-smoke.md
           npm run build
           npm run verify:build
-          test ! -e dist/cases/ci-route-smoke/index.html
+          test ! -e dist/cases/case-ci-route-smoke/index.html
 
       - name: Verify custom-domain build mode
         env:
