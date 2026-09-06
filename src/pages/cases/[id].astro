@@ -1,0 +1,59 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import CaseDetail from '../../components/CaseDetail.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('cases', ({ data }) => data.publish);
+
+  return entries.map((entry) => ({
+    params: { id: entry.id },
+    props: { entry },
+  }));
+}
+
+type Props = {
+  entry: CollectionEntry<'cases'>;
+};
+
+const { entry } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={`${entry.data.title} — Данил Непомнящий`} description={entry.data.summary}>
+  <main id="main" class="case-page">
+    <div class="shell">
+      <a class="case-page__back" href={`${base}#cases`}>← Все разборы</a>
+      <CaseDetail entry={entry} />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .case-page {
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+  }
+
+  .case-page__back {
+    display: inline-flex;
+    margin-top: 28px;
+    padding: 10px 0;
+    color: var(--steel);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .case-page__back:hover {
+    color: var(--ink);
+  }
+
+  .case-page__back:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 5px;
+  }
+</style>
