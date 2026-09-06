@@ -56,11 +56,11 @@ npm run test:e2e
 
 ## Production
 
-До подключения собственного домена сайт собирается как GitHub Project Pages:
+Основной production URL:
 
-`https://true-ruslan.github.io/nezabudka-spa/`
+`https://nepomka.ru/`
 
-Workflow `.github/workflows/deploy.yml` запускается только после успешного `CI` в `main`, получает фактические `origin` и `base_path` из GitHub Pages и собирает Astro под них. Благодаря этому тот же код работает и после назначения собственного домена.
+GitHub Pages custom domain настроен на `nepomka.ru`. Workflow `.github/workflows/deploy.yml` запускается только после успешного `CI` в `main`, получает фактические `origin` и `base_path` из GitHub Pages и собирает Astro под них. Для custom domain сайт собирается в корне домена без `/nezabudka-spa/`.
 
 После deployment workflow проверяет опубликованную главную страницу по HTTP и делает отдельный запрос к несуществующему URL: GitHub Pages должен вернуть HTTP 404 с нашей страницей «Страница не найдена».
 
