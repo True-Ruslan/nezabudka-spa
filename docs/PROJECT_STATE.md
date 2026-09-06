@@ -4,7 +4,7 @@
 
 ## Статус
 
-Version 0.1.1 — production hardening завершён в feature-ветке и подтверждён CI; релиз ожидает PR/merge в `main` и post-deploy verification.
+Version 0.1.1 — production hardening реализован и проходит полный CI-контур. Фактический production release определяется состоянием `main` и последним успешным `Deploy GitHub Pages`; после каждого merge deployment дополнительно проверяет опубликованный сайт по HTTP.
 
 ## Реализовано
 
@@ -42,21 +42,19 @@ Version 0.1.1 — production hardening завершён в feature-ветке и
 - после публикации выполняется HTTP smoke-check реальной главной страницы;
 - отдельный production smoke проверяет неизвестный URL: ожидаются HTTP 404 и наша страница «Страница не найдена».
 
-## Последняя подтверждённая проверка feature-ветки
+## Подтверждённые quality gates v0.1.1
 
-Head: `a4da09f4aa89588eb0b2e4c57b69a5706e2da404` (`ci: verify built and published Pages site`).
-
-GitHub Actions CI run `34032164995` завершён успешно:
+На полном hardening build до release-documentation изменения прошли:
 
 - `npm ci` — success;
 - `astro check` — 0 errors, 0 warnings, 0 hints;
 - production build — success;
 - static build verifier — success;
-- negative verifier regression — success (сломанная ссылка корректно отклонена);
+- negative verifier regression — success: намеренно сломанная ссылка корректно отклоняется;
 - Playwright — 16 passed, 2 skipped, 0 failed;
 - custom-domain build + verifier — success.
 
-После documentation commits требуется свежий PR CI перед merge; production smoke можно подтвердить только после merge/deploy.
+Каждый последующий commit и PR повторно проходят тот же CI workflow. Финальный production status необходимо сверять с GitHub Actions, а не считать этот документ заменой live-проверке.
 
 ## Публикация
 
