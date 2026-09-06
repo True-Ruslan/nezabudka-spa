@@ -4,11 +4,16 @@ root.classList.add('js');
 const menuButton = document.querySelector<HTMLButtonElement>('[data-menu-button]');
 const menu = document.querySelector<HTMLElement>('[data-menu]');
 
-const closeMenu = () => {
+type CloseMenuOptions = {
+  restoreFocus?: boolean;
+};
+
+const closeMenu = ({ restoreFocus = false }: CloseMenuOptions = {}) => {
   if (!menuButton || !menu) return;
   menuButton.setAttribute('aria-expanded', 'false');
   menuButton.setAttribute('aria-label', 'Открыть меню');
   menu.removeAttribute('data-open');
+  if (restoreFocus) menuButton.focus();
 };
 
 if (menuButton && menu) {
@@ -20,7 +25,14 @@ if (menuButton && menu) {
     else menu.setAttribute('data-open', '');
   });
 
-  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu()));
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+      closeMenu({ restoreFocus: true });
+    }
+  });
+
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 900) closeMenu();
   });
