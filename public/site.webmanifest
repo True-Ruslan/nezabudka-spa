@@ -1,0 +1,11 @@
+{
+  "name": "Данил Непомнящий — автомобильный специалист",
+  "short_name": "Nezabudka",
+  "description": "Персональный сайт Данила Непомнящего об автомобильной экспертизе, обслуживании, запчастях и автобизнесе.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f0eb",
+  "theme_color": "#f1f0eb",
+  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

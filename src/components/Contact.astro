@@ -1,0 +1,32 @@
+---
+import { contact } from '../data/site';
+
+const channels = [
+  contact.telegram && { label: 'Telegram', href: `https://t.me/${contact.telegram.replace(/^@/, '')}` },
+  contact.email && { label: 'Email', href: `mailto:${contact.email}` },
+  contact.phone && { label: 'Телефон', href: `tel:${contact.phone.replace(/[^+\d]/g, '')}` },
+].filter(Boolean) as Array<{ label: string; href: string }>;
+---
+
+<section class="contact-section" id="contact" aria-labelledby="contact-title">
+  <div class="shell contact-grid" data-reveal>
+    <div>
+      <p class="section-heading__label">06 / КОНТАКТ</p>
+      <h2 id="contact-title">Есть вопрос по автомобилю, запчастям или автобизнесу?</h2>
+    </div>
+    <div class="contact-section__action">
+      {channels.length > 0 ? (
+        <div class="contact-links">
+          {channels.map((channel) => (
+            <a class="button button--light" href={channel.href}>{channel.label} <span aria-hidden="true">↗</span></a>
+          ))}
+        </div>
+      ) : (
+        <div class="contact-pending">
+          <p>Прямые контакты будут добавлены после согласования публикации.</p>
+          <span>Никаких вымышленных адресов и аккаунтов.</span>
+        </div>
+      )}
+    </div>
+  </div>
+</section>

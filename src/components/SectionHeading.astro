@@ -1,0 +1,18 @@
+---
+interface Props {
+  index: string;
+  label: string;
+  title: string;
+  intro?: string;
+  light?: boolean;
+}
+const { index, label, title, intro, light = false } = Astro.props;
+---
+
+<header class:list={['section-heading', { 'section-heading--light': light }]} data-reveal>
+  <p class="section-heading__label">{index} / {label}</p>
+  <div class="section-heading__grid">
+    <h2>{title}</h2>
+    {intro && <p>{intro}</p>}
+  </div>
+</header>

@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify project Pages build mode
+        run: |
+          grep -q 'https://true-ruslan.github.io/nezabudka-spa/' dist/index.html
+          grep -q '/nezabudka-spa/favicon.svg' dist/index.html
+
+      - name: Browser tests
+        run: npm run test:e2e
+
+      - name: Verify custom-domain build mode
+        env:
+          SITE_ORIGIN: https://danil.example.test
+          BASE_PATH: ''
+        run: |
+          npm run build
+          grep -q 'https://danil.example.test/' dist/index.html
+          if grep -q 'true-ruslan.github.io/nezabudka-spa' dist/index.html; then
+            echo 'Project Pages URL leaked into custom-domain build.' >&2
+            exit 1
+          fi
+          if grep -q '/nezabudka-spa/' dist/index.html; then
+            echo 'Project base path leaked into custom-domain build.' >&2
+            exit 1
+          fi
+
+      - name: Upload visual baselines
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: site-screenshots
+          path: artifacts/screenshots/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import SectionHeading from './SectionHeading.astro';
+
+const publishedCases = await getCollection('cases', ({ data }) => data.publish);
+---
+
+<section class="section section--ink" id="cases" aria-labelledby="cases-title">
+  <div class="shell">
+    <SectionHeading
+      index="02"
+      label="РАЗБОРЫ"
+      title="Доказательства важнее красивых обещаний."
+      intro="Здесь публикуются только реальные задачи, где можно показать контекст, ход проверки, решение и результат."
+      light
+    />
+
+    {publishedCases.length > 0 ? (
+      <div class="case-list" data-reveal>
+        {publishedCases.map((entry, index) => (
+          <article class="case-row">
+            <span class="case-row__number">{String(index + 1).padStart(2, '0')}</span>
+            <div>
+              <p class="case-row__vehicle">{entry.data.vehicle} / {entry.data.context}</p>
+              <h3>{entry.data.title}</h3>
+              <p>{entry.data.summary}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="proof-policy" data-reveal>
+        <p class="proof-policy__statement">Не заполняю портфолио выдуманными историями.</p>
+        <p>
+          Раздел будет пополняться только документированными случаями, которые можно описать без домыслов и без нарушения приватности владельцев.
+        </p>
+        <span>REAL CONTEXT / REAL DECISION / REAL RESULT</span>
+      </div>
+    )}
+  </div>
+</section>

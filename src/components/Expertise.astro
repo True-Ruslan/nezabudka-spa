@@ -1,0 +1,25 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { expertise } from '../data/site';
+---
+
+<section class="section section--paper" id="expertise" aria-labelledby="expertise-title">
+  <div class="shell">
+    <SectionHeading
+      index="01"
+      label="ЭКСПЕРТИЗА"
+      title="Смотрю на автомобиль целиком."
+      intro="Опыт в разных частях автомобильной сферы помогает видеть не отдельную операцию, а связь между состоянием машины, деталями, решениями и людьми."
+    />
+    <div class="expertise-grid" data-reveal>
+      {expertise.map((item, index) => (
+        <article class="expertise-item">
+          <span class="expertise-item__index">0{index + 1}</span>
+          <h3>{item.title}</h3>
+          <p>{item.description}</p>
+          <span class="expertise-item__arrow" aria-hidden="true">↗</span>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
