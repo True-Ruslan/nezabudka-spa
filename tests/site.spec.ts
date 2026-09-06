@@ -25,8 +25,12 @@ test('presents Danil as an automotive specialist without fabricated proof', asyn
   await expect(page.getByText(/сертифицирован/i)).toHaveCount(0);
 });
 
-test('keeps navigation usable and base-path safe', async ({ page }) => {
+test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
   await page.goto('./');
+
+  if (isMobile) {
+    await page.getByRole('button', { name: 'Открыть меню' }).click();
+  }
 
   const expertiseLink = page.getByRole('link', { name: 'Экспертиза' }).first();
   await expect(expertiseLink).toHaveAttribute('href', /#expertise$/);
@@ -52,12 +56,33 @@ test('has no horizontal overflow on mobile', async ({ page, isMobile }) => {
   test.skip(!isMobile, 'mobile-only regression check');
   await page.goto('./');
 
-  const dimensions = await page.evaluate(() => ({
-    scrollWidth: document.documentElement.scrollWidth,
-    clientWidth: document.documentElement.clientWidth,
-  }));
+  const diagnostics = await page.evaluate(() => {
+    const viewport = document.documentElement.clientWidth;
+    const offenders = [...document.querySelectorAll<HTMLElement>('body *')]
+      .map((element) => {
+        const rect = element.getBoundingClientRect();
+        return {
+          tag: element.tagName.toLowerCase(),
+          className: element.className,
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+          width: Math.round(rect.width),
+        };
+      })
+      .filter(({ left, right }) => left < -1 || right > viewport + 1)
+      .slice(0, 12);
 
-  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      clientWidth: viewport,
+      offenders,
+    };
+  });
+
+  expect(
+    diagnostics.scrollWidth,
+    `Overflow offenders: ${JSON.stringify(diagnostics.offenders)}`,
+  ).toBeLessThanOrEqual(diagnostics.clientWidth + 1);
 });
 
 test('supports keyboard navigation and visible focus', async ({ page }) => {

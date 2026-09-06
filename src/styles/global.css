@@ -604,7 +604,7 @@ h3 {
   .hero h1 { font-size: clamp(56px, 17vw, 82px); }
   .hero__lead { font-size: 17px; }
   .hero__domains { grid-template-columns: 1fr 1fr; }
-  .hero__visual { margin-inline: calc((100vw - var(--shell)) / -2); }
+  .hero__visual { width: calc(100% + 32px); margin-left: -16px; }
   .technical-visual { min-height: 480px; }
   .section-heading__grid, .proof-policy, .about-grid, .contact-grid, .credo-band__inner { grid-template-columns: 1fr; gap: 28px; }
   .section-heading__grid > p { font-size: 16px; }
@@ -616,9 +616,9 @@ h3 {
   .proof-policy > span { grid-column: auto; }
   .experience-row { grid-template-columns: 48px 1fr; gap: 20px; }
   .experience-row p { grid-column: 2; }
-  .help-grid { grid-template-columns: 1fr; }
+  .help-grid { width: 100%; grid-template-columns: 1fr; }
   .help-panel { min-height: auto; padding-block: 72px; }
-  .help-panel--light, .help-panel--blue { margin-inline: calc((100vw - var(--shell)) / -2); padding-inline: max(16px, calc((100vw - var(--shell)) / 2)); }
+  .help-panel--light, .help-panel--blue { margin-inline: 0; padding-inline: 16px; }
   .principles-list li { grid-template-columns: 42px 1fr; gap: 16px; }
   .contact-section__action { justify-self: start; }
   .site-footer__inner { min-height: 160px; flex-direction: column; align-items: flex-start; justify-content: center; }
