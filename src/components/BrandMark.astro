@@ -1,23 +1,56 @@
 ---
+import { brand } from '../data/site';
+
 interface Props {
   compact?: boolean;
 }
+
 const { compact = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 
-<span class:list={['brand-lockup', { 'brand-lockup--compact': compact }]} aria-label="Nezabudka — Данил Непомнящий">
-  <svg class="brand-lockup__mark" viewBox="0 0 48 48" aria-hidden="true">
-    <g fill="currentColor">
-      <ellipse cx="24" cy="10.5" rx="6.3" ry="10.2" />
-      <ellipse cx="37" cy="20.5" rx="6.3" ry="10.2" transform="rotate(72 37 20.5)" />
-      <ellipse cx="32" cy="36" rx="6.3" ry="10.2" transform="rotate(144 32 36)" />
-      <ellipse cx="16" cy="36" rx="6.3" ry="10.2" transform="rotate(216 16 36)" />
-      <ellipse cx="11" cy="20.5" rx="6.3" ry="10.2" transform="rotate(288 11 20.5)" />
-    </g>
-    <circle cx="24" cy="24" r="5" fill="#f1f0eb" />
-  </svg>
+<span
+  class:list={['brand-lockup', { 'brand-lockup--compact': compact }]}
+  aria-label={`${brand.name} — ${brand.person}`}
+>
+  <img
+    class="brand-lockup__mark"
+    src={`${base}branding/nepomka-favicon.png`}
+    width="64"
+    height="64"
+    alt=""
+    aria-hidden="true"
+  />
   <span class="brand-lockup__text">
-    <strong>NEZABUDKA</strong>
-    <small>DANIL NEPOMNYASHCHIY</small>
+    <strong>{brand.name}</strong>
+    <small>{brand.person}</small>
   </span>
 </span>
+
+<style>
+  .brand-lockup {
+    gap: 10px;
+  }
+
+  .brand-lockup__mark {
+    display: block;
+    object-fit: contain;
+  }
+
+  .brand-lockup__text strong {
+    letter-spacing: 0.025em;
+    text-transform: none;
+  }
+
+  .brand-lockup__text small {
+    max-width: 220px;
+    letter-spacing: 0.055em;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 760px) {
+    .brand-lockup__text small {
+      display: none;
+    }
+  }
+</style>

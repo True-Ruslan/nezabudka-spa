@@ -8,8 +8,8 @@ export type ContactConfig = Readonly<{
 }>;
 
 export const brand = {
-  name: 'NEZABUDKA',
-  person: 'Данил Непомнящий',
+  name: 'Nepomka',
+  person: 'Непомнящий Данил Александрович',
   descriptor: 'Автомобильный специалист',
   statement: 'Автомобили без догадок.',
   description:
