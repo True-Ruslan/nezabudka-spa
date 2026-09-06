@@ -116,7 +116,10 @@ test('renders the generated custom 404 with base-safe recovery links', async ({ 
   expect(response?.status()).toBe(200);
 
   await expect(page.getByRole('heading', { name: /страница не найдена/i })).toBeVisible();
-  await expect(page.getByRole('link', { name: /на главную/i })).toHaveAttribute('href', '/nezabudka-spa/');
+  await expect(page.getByRole('link', { name: 'На главную', exact: true })).toHaveAttribute(
+    'href',
+    '/nezabudka-spa/',
+  );
   await expect(page.getByRole('link', { name: /контакт/i })).toHaveAttribute(
     'href',
     '/nezabudka-spa/#contact',
