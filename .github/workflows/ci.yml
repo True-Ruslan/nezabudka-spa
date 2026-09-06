@@ -64,7 +64,7 @@ jobs:
       - name: Verify project Pages build mode
         run: |
           grep -q 'https://true-ruslan.github.io/nezabudka-spa/' dist/index.html
-          grep -q '/nezabudka-spa/favicon.svg' dist/index.html
+          grep -q '/nezabudka-spa/branding/nepomka-favicon.png' dist/index.html
           test -f dist/404.html
           test ! -e dist/cases/case-template/index.html
 
