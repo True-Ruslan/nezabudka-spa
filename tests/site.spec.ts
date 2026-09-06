@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
 const requiredSections = ['expertise', 'cases', 'experience', 'help', 'principles', 'about', 'contact'];
@@ -23,6 +24,7 @@ test('presents Danil as an automotive specialist without fabricated proof', asyn
   await expect(page.getByText(/100\+ автомобилей/i)).toHaveCount(0);
   await expect(page.getByText(/5\.0|отзыв/i)).toHaveCount(0);
   await expect(page.getByText(/сертифицирован/i)).toHaveCount(0);
+  await expect(page.getByText(/шаблон кейса/i)).toHaveCount(0);
 });
 
 test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
@@ -50,6 +52,20 @@ test('renders an honest contact state until verified details are supplied', asyn
   await expect(contact.locator('a[href^="mailto:"]')).toHaveCount(0);
   await expect(contact.locator('a[href^="tel:"]')).toHaveCount(0);
   await expect(contact.locator('a[href*="t.me/"]')).toHaveCount(0);
+});
+
+test('publishes canonical metadata for the GitHub Pages project path', async ({ page }) => {
+  await page.goto('./');
+
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    'href',
+    'https://true-ruslan.github.io/nezabudka-spa/',
+  );
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+    'content',
+    'https://true-ruslan.github.io/nezabudka-spa/',
+  );
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/nezabudka-spa/site.webmanifest');
 });
 
 test('has no horizontal overflow on mobile', async ({ page, isMobile }) => {
@@ -93,4 +109,20 @@ test('supports keyboard navigation and visible focus', async ({ page }) => {
   await expect(focused).toBeVisible();
   const outline = await focused.evaluate((element) => getComputedStyle(element).outlineStyle);
   expect(outline).not.toBe('none');
+});
+
+test('renders without page errors and captures a visual baseline', async ({ page }, testInfo) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./');
+  await page.waitForLoadState('networkidle');
+
+  expect(pageErrors).toEqual([]);
+
+  await mkdir('artifacts/screenshots', { recursive: true });
+  await page.screenshot({
+    path: `artifacts/screenshots/${testInfo.project.name}.png`,
+    fullPage: true,
+  });
 });

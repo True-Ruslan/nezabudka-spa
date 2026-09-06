@@ -37,6 +37,26 @@ jobs:
       - name: Browser tests
         run: npm run test:e2e
 
+      - name: Verify custom-domain build mode
+        env:
+          CUSTOM_DOMAIN: danil.example.test
+        run: |
+          npm run build
+          grep -q 'https://danil.example.test/' dist/index.html
+          if grep -q 'true-ruslan.github.io/nezabudka-spa' dist/index.html; then
+            echo 'Project Pages URL leaked into custom-domain build.' >&2
+            exit 1
+          fi
+
+      - name: Upload visual baselines
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: site-screenshots
+          path: artifacts/screenshots/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Upload Playwright report
         if: always()
         uses: actions/upload-artifact@v6
