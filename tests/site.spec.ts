@@ -46,6 +46,9 @@ test('loads the exact approved Nepomka brand assets and hero portrait', async ({
   await expect(heroPortrait).toHaveAttribute('src', /\/branding\/danil-hero\.webp$/);
   await expect(heroPortrait).toHaveAttribute('alt', 'Непомнящий Данил Александрович');
   expect(await heroPortrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+  expect(await heroPortrait.evaluate((image: HTMLImageElement) => getComputedStyle(image).objectPosition)).toBe(
+    '100% 50%',
+  );
 
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
     'href',
