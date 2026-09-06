@@ -16,9 +16,9 @@ test('presents Danil as an automotive specialist without fabricated proof', asyn
     await expect(page.locator(`#${id}`)).toHaveCount(1);
   }
 
-  await expect(page.getByRole('heading', { name: 'Автовладельцам' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Автобизнесу' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Как я принимаю решения' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Автовладельцам', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Автобизнесу', exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Как я принимаю решения', exact: true })).toBeVisible();
 
   await expect(page.getByText(/100\+ автомобилей/i)).toHaveCount(0);
   await expect(page.getByText(/5\.0|отзыв/i)).toHaveCount(0);
