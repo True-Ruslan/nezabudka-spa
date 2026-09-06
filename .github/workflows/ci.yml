@@ -71,6 +71,36 @@ jobs:
       - name: Browser tests
         run: npm run test:e2e
 
+      - name: Prove published case route generation
+        run: |
+          cat > src/content/cases/ci-route-smoke.md <<'EOF'
+          ---
+          title: "CI route smoke"
+          vehicle: "CI fixture"
+          context: "Ephemeral build verification"
+          summary: "Temporary CI-only content entry used to prove published case routing."
+          problem: "Verify route generation."
+          investigation: "Build an ephemeral publish:true entry."
+          decision: "Require the generated detail page and homepage link."
+          rationale: "The repository intentionally contains no real published cases yet."
+          result: "The static route exists only inside this runner."
+          publish: true
+          ---
+          EOF
+
+          npm run build
+          npm run verify:build
+          test -f dist/cases/ci-route-smoke/index.html
+          grep -q 'CI route smoke' dist/cases/ci-route-smoke/index.html
+          grep -q 'https://true-ruslan.github.io/nezabudka-spa/cases/ci-route-smoke/' dist/cases/ci-route-smoke/index.html
+          grep -q '/nezabudka-spa/cases/ci-route-smoke/' dist/index.html
+          test ! -e dist/cases/case-template/index.html
+
+          rm src/content/cases/ci-route-smoke.md
+          npm run build
+          npm run verify:build
+          test ! -e dist/cases/ci-route-smoke/index.html
+
       - name: Verify custom-domain build mode
         env:
           SITE_ORIGIN: https://danil.example.test
