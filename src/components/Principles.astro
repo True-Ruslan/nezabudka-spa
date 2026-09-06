@@ -1,0 +1,23 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import { principles } from '../data/site';
+---
+
+<section class="section section--soft" id="principles" aria-labelledby="principles-title">
+  <div class="shell">
+    <SectionHeading
+      index="04"
+      label="ПОДХОД"
+      title="Как я принимаю решения"
+      intro="Автомобиль — система. Хорошее решение учитывает не только то, что можно сделать, но и зачем это делать сейчас."
+    />
+    <ol class="principles-list" data-reveal>
+      {principles.map((principle, index) => (
+        <li>
+          <span>{String(index + 1).padStart(2, '0')}</span>
+          <p>{principle}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>

@@ -1,0 +1,28 @@
+---
+import TechnicalVisual from './TechnicalVisual.astro';
+import { brand } from '../data/site';
+const base = import.meta.env.BASE_URL;
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="shell hero__grid">
+    <div class="hero__copy" data-reveal>
+      <p class="eyeline">DANIL NEPOMNYASHCHIY / AUTOMOTIVE</p>
+      <p class="hero__name">{brand.person}</p>
+      <h1 id="hero-title">{brand.statement}</h1>
+      <p class="hero__lead">{brand.description}</p>
+      <div class="hero__actions">
+        <a class="button" href={`${base}#contact`}>
+          Обсудить автомобиль <span aria-hidden="true">→</span>
+        </a>
+        <a class="button button--ghost" href={`${base}#experience`}>Посмотреть опыт</a>
+      </div>
+      <div class="hero__domains" aria-label="Области опыта">
+        <span>Состояние</span><span>Обслуживание</span><span>Запчасти</span><span>B2B</span>
+      </div>
+    </div>
+    <div class="hero__visual" data-reveal>
+      <TechnicalVisual />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,24 @@
+---
+import { businessHelp, ownerHelp } from '../data/site';
+---
+
+<section class="help-section" id="help" aria-label="Чем могу быть полезен">
+  <div class="shell help-grid">
+    <article class="help-panel help-panel--light" data-reveal>
+      <p class="section-heading__label">А / ЧАСТНЫЕ КЛИЕНТЫ</p>
+      <h2>Автовладельцам</h2>
+      <p class="help-panel__intro">Когда нужно принять решение, а не просто получить ещё одно мнение без объяснений.</p>
+      <ul>
+        {ownerHelp.map((item) => <li>{item}</li>)}
+      </ul>
+    </article>
+    <article class="help-panel help-panel--blue" data-reveal>
+      <p class="section-heading__label">B / PROFESSIONAL</p>
+      <h2>Автобизнесу</h2>
+      <p class="help-panel__intro">Когда продукту или продажам нужен человек, который понимает предметную область не только по презентациям.</p>
+      <ul>
+        {businessHelp.map((item) => <li>{item}</li>)}
+      </ul>
+    </article>
+  </div>
+</section>

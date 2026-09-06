@@ -1,0 +1,23 @@
+---
+interface Props {
+  compact?: boolean;
+}
+const { compact = false } = Astro.props;
+---
+
+<span class:list={['brand-lockup', { 'brand-lockup--compact': compact }]} aria-label="Nezabudka — Данил Непомнящий">
+  <svg class="brand-lockup__mark" viewBox="0 0 48 48" aria-hidden="true">
+    <g fill="currentColor">
+      <ellipse cx="24" cy="10.5" rx="6.3" ry="10.2" />
+      <ellipse cx="37" cy="20.5" rx="6.3" ry="10.2" transform="rotate(72 37 20.5)" />
+      <ellipse cx="32" cy="36" rx="6.3" ry="10.2" transform="rotate(144 32 36)" />
+      <ellipse cx="16" cy="36" rx="6.3" ry="10.2" transform="rotate(216 16 36)" />
+      <ellipse cx="11" cy="20.5" rx="6.3" ry="10.2" transform="rotate(288 11 20.5)" />
+    </g>
+    <circle cx="24" cy="24" r="5" fill="#f1f0eb" />
+  </svg>
+  <span class="brand-lockup__text">
+    <strong>NEZABUDKA</strong>
+    <small>Данил Непомнящий</small>
+  </span>
+</span>
