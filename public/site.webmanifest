@@ -1,11 +1,14 @@
 {
-  "name": "Данил Непомнящий — автомобильный специалист",
-  "short_name": "Nezabudka",
-  "description": "Персональный сайт Данила Непомнящего об автомобильной экспертизе, обслуживании, запчастях и автобизнесе.",
+  "name": "Nepomka — Непомнящий Данил Александрович",
+  "short_name": "Nepomka",
+  "description": "Персональный сайт Непомнящего Данила Александровича об автомобильной экспертизе, обслуживании, запчастях и автобизнесе.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#f1f0eb",
   "theme_color": "#f1f0eb",
-  "icons": [{ "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+  "icons": [
+    { "src": "./branding/nepomka-favicon.png", "sizes": "64x64", "type": "image/png" },
+    { "src": "./branding/nepomka-apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
 }

@@ -1,23 +1,92 @@
 ---
+import { brand } from '../data/site';
+
 interface Props {
   compact?: boolean;
 }
+
 const { compact = false } = Astro.props;
+const base = import.meta.env.BASE_URL;
 ---
 
-<span class:list={['brand-lockup', { 'brand-lockup--compact': compact }]} aria-label="Nezabudka — Данил Непомнящий">
-  <svg class="brand-lockup__mark" viewBox="0 0 48 48" aria-hidden="true">
-    <g fill="currentColor">
-      <ellipse cx="24" cy="10.5" rx="6.3" ry="10.2" />
-      <ellipse cx="37" cy="20.5" rx="6.3" ry="10.2" transform="rotate(72 37 20.5)" />
-      <ellipse cx="32" cy="36" rx="6.3" ry="10.2" transform="rotate(144 32 36)" />
-      <ellipse cx="16" cy="36" rx="6.3" ry="10.2" transform="rotate(216 16 36)" />
-      <ellipse cx="11" cy="20.5" rx="6.3" ry="10.2" transform="rotate(288 11 20.5)" />
-    </g>
-    <circle cx="24" cy="24" r="5" fill="#f1f0eb" />
-  </svg>
-  <span class="brand-lockup__text">
-    <strong>NEZABUDKA</strong>
-    <small>DANIL NEPOMNYASHCHIY</small>
-  </span>
+<span
+  class:list={['brand-lockup', { 'brand-lockup--compact': compact }]}
+  aria-label={`${brand.name} — ${brand.person}`}
+>
+  {
+    compact ? (
+      <>
+        <img
+          class="brand-lockup__mark"
+          src={`${base}branding/nepomka-favicon.png`}
+          width="64"
+          height="64"
+          alt=""
+          aria-hidden="true"
+        />
+        <span class="brand-lockup__text">
+          <strong>{brand.name}</strong>
+        </span>
+      </>
+    ) : (
+      <img
+        class="brand-lockup__logo"
+        data-brand-logo
+        src={`${base}branding/nepomka-logo.webp`}
+        width="480"
+        height="160"
+        alt={brand.name}
+        loading="eager"
+        decoding="async"
+      />
+    )
+  }
 </span>
+
+<style>
+  .brand-lockup {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .brand-lockup__logo {
+    display: block;
+    width: 156px;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .brand-lockup--compact {
+    gap: 10px;
+  }
+
+  .brand-lockup--compact .brand-lockup__mark {
+    display: block;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .brand-lockup--compact .brand-lockup__text {
+    display: block;
+    line-height: 1;
+  }
+
+  .brand-lockup--compact .brand-lockup__text strong {
+    font-size: 14px;
+    letter-spacing: 0.025em;
+    text-transform: none;
+  }
+
+  @media (max-width: 760px) {
+    .brand-lockup__logo {
+      width: 138px;
+    }
+  }
+
+  @media (max-width: 440px) {
+    .brand-lockup__logo {
+      width: 126px;
+    }
+  }
+</style>

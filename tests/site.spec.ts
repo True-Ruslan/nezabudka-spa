@@ -3,11 +3,16 @@ import { expect, test } from '@playwright/test';
 
 const requiredSections = ['expertise', 'cases', 'experience', 'help', 'principles', 'about', 'contact'];
 
-test('presents Danil as an automotive specialist without fabricated proof', async ({ page }) => {
+test('presents Danil under the Nepomka brand without fabricated proof', async ({ page }) => {
   await page.goto('./');
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Автомобили без догадок.' })).toBeVisible();
-  await expect(page.getByText('Данил Непомнящий', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Непомнящий Данил Александрович' }),
+  ).toBeVisible();
+  await expect(page.getByText('Автомобили без догадок.', { exact: true })).toBeVisible();
+  await expect(page.locator('[data-brand-logo]')).toBeVisible();
+  await expect(page.getByText('NEZABUDKA', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('DANIL NEPOMNYASHCHIY', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Состояние автомобиля', { exact: true })).toBeVisible();
   await expect(page.getByText('Обслуживание', { exact: true })).toBeVisible();
   await expect(page.getByText('Запчасти', { exact: true })).toBeVisible();
@@ -25,6 +30,32 @@ test('presents Danil as an automotive specialist without fabricated proof', asyn
   await expect(page.getByText(/5\.0|отзыв/i)).toHaveCount(0);
   await expect(page.getByText(/сертифицирован/i)).toHaveCount(0);
   await expect(page.getByText(/шаблон кейса/i)).toHaveCount(0);
+});
+
+test('loads the exact approved Nepomka brand assets and hero portrait', async ({ page }) => {
+  await page.goto('./');
+
+  const brandLogo = page.locator('[data-brand-logo]');
+  await expect(brandLogo).toBeVisible();
+  await expect(brandLogo).toHaveAttribute('src', /\/branding\/nepomka-logo\.webp$/);
+  await expect(brandLogo).toHaveAttribute('alt', 'Nepomka');
+  expect(await brandLogo.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+
+  const heroPortrait = page.locator('[data-hero-portrait]');
+  await expect(heroPortrait).toBeVisible();
+  await expect(heroPortrait).toHaveAttribute('src', /\/branding\/danil-hero\.webp$/);
+  await expect(heroPortrait).toHaveAttribute('alt', 'Непомнящий Данил Александрович');
+  expect(await heroPortrait.evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0);
+
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+    'href',
+    '/nezabudka-spa/branding/nepomka-favicon.png',
+  );
+  await expect(page.locator('link[rel="apple-touch-icon"]')).toHaveAttribute(
+    'href',
+    '/nezabudka-spa/branding/nepomka-apple-touch-icon.png',
+  );
+  await expect(page).toHaveTitle(/Nepomka.*Непомнящий Данил Александрович/);
 });
 
 test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
@@ -64,6 +95,11 @@ test('publishes canonical metadata for the GitHub Pages project path', async ({ 
   await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
     'content',
     'https://true-ruslan.github.io/nezabudka-spa/',
+  );
+  await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Nepomka');
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+    'content',
+    'https://true-ruslan.github.io/nezabudka-spa/branding/danil-hero.webp',
   );
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/nezabudka-spa/site.webmanifest');
 });

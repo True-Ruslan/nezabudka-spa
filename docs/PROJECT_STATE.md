@@ -4,14 +4,17 @@
 
 ## Статус
 
-Version 0.1.1 — production hardening реализован и проходит полный CI-контур. Фактический production release определяется состоянием `main` и последним успешным `Deploy GitHub Pages`; после каждого merge deployment дополнительно проверяет опубликованный сайт по HTTP.
+Линия v0.1.x: production foundation/hardening и фирменная идентичность **Nepomka** реализованы. Фактический production release определяется состоянием `main` и последним успешным `Deploy GitHub Pages`; после каждого merge deployment дополнительно проверяет опубликованный сайт по HTTP.
 
 ## Реализовано
 
 ### Product / UX
 
 - Astro 6 static site;
-- адаптивная editorial/technical визуальная система NEZABUDKA;
+- адаптивная editorial/technical визуальная система Nepomka;
+- основной горизонтальный wordmark, компактный знак, favicon и Apple Touch Icon;
+- hero с утверждённым портретным визуалом на основе предоставленных владельцем референсных фотографий;
+- публичное имя: `Непомнящий Данил Александрович`;
 - Hero, Expertise, Cases, Experience, Help Paths, Principles, About, Contact, Footer;
 - desktop/mobile navigation;
 - Escape закрывает мобильное меню и возвращает keyboard focus на кнопку;
@@ -25,7 +28,7 @@ Version 0.1.1 — production hardening реализован и проходит 
 
 - semantic landmarks, skip link, focus states, reduced motion;
 - canonical, description, Open Graph, Twitter Card, JSON-LD Person, sitemap, robots.txt;
-- manifest и favicon;
+- Nepomka manifest/favicon и hero Open Graph image;
 - mobile horizontal-overflow regression check.
 
 ### Build / CI / deploy
@@ -33,6 +36,7 @@ Version 0.1.1 — production hardening реализован и проходит 
 - Node.js 24;
 - committed npm `package-lock.json` и воспроизводимые установки через `npm ci`;
 - Astro check + production build;
+- Git blob hash-gate для утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
 - zero-dependency `scripts/verify-static-build.mjs` для проверки generated HTML и локальных ссылок/assets;
 - CI содержит negative regression-check: намеренно сломанная локальная ссылка обязана быть обнаружена verifier-ом;
 - Playwright desktop/mobile checks и visual artifacts;
@@ -42,19 +46,22 @@ Version 0.1.1 — production hardening реализован и проходит 
 - после публикации выполняется HTTP smoke-check реальной главной страницы;
 - отдельный production smoke проверяет неизвестный URL: ожидаются HTTP 404 и наша страница «Страница не найдена».
 
-## Подтверждённые quality gates v0.1.1
+## Quality gates
 
-На полном hardening build до release-documentation изменения прошли:
+Каждый commit и PR проходят один и тот же CI-контур:
 
-- `npm ci` — success;
-- `astro check` — 0 errors, 0 warnings, 0 hints;
-- production build — success;
-- static build verifier — success;
-- negative verifier regression — success: намеренно сломанная ссылка корректно отклоняется;
-- Playwright — 16 passed, 2 skipped, 0 failed;
-- custom-domain build + verifier — success.
+- `npm ci`;
+- Astro check;
+- production build;
+- exact approved asset hashes;
+- static build verifier;
+- negative verifier regression;
+- Playwright desktop/mobile;
+- ephemeral `publish:true` case-route smoke;
+- custom-domain build + verifier;
+- visual screenshot artifacts.
 
-Каждый последующий commit и PR повторно проходят тот же CI workflow. Финальный production status необходимо сверять с GitHub Actions, а не считать этот документ заменой live-проверке.
+Финальный production status необходимо сверять с GitHub Actions, а не считать этот документ заменой live-проверке.
 
 ## Публикация
 
@@ -67,14 +74,15 @@ Custom domain поддерживается конфигурацией deployment
 ## Контентный workflow
 
 - контакты и основные публичные данные: `src/data/site.ts`;
+- брендовые production assets: `public/branding/`;
 - кейсы: `src/content/cases/`;
-- правила фактчекинга, публикации кейсов и фотографий: `docs/CONTENT_GUIDE.md`.
+- правила фактчекинга, публикации кейсов и визуалов: `docs/CONTENT_GUIDE.md`.
 
 ## Осознанно отложено
 
 - подтверждённые контактные данные;
 - реальные опубликованные кейсы;
-- профессиональная фотография Данила;
+- при необходимости — реальные редакционные фотографии для About/кейсов;
 - финальный купленный домен.
 
 Эти пункты являются контентными входными данными, а не блокерами архитектуры или публикации сайта.

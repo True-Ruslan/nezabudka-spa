@@ -1,20 +1,34 @@
-# NEZABUDKA
+# Nepomka
 
-Персональный сайт автомобильного специалиста Данила Непомнящего.
+Персональный сайт автомобильного специалиста **Непомнящего Данила Александровича**.
 
 ## Что внутри
 
 - Astro 6 + TypeScript;
 - полностью статическая production-сборка;
 - адаптивный интерфейс без клиентского UI-фреймворка;
+- фирменная идентичность Nepomka: утверждённый wordmark, компактный знак и browser icons;
+- утверждённый hero-портрет на основе предоставленных владельцем референсных фотографий;
 - SEO metadata, Open Graph, JSON-LD, sitemap, robots.txt и web manifest;
 - типизированная content collection для проверенных автомобильных кейсов;
 - отдельные статические страницы опубликованных кейсов `/cases/<id>/`;
 - собственная base-path-safe страница 404;
 - Playwright-проверки desktop/mobile, навигации, accessibility и горизонтального overflow;
+- hash-gate для ключевых утверждённых brand assets;
 - zero-dependency проверка целостности generated static site;
 - автоматический деплой на GitHub Pages после успешного CI в `main`;
 - post-deploy HTTP smoke-check главной страницы и реального 404.
+
+## Brand assets
+
+Production-ассеты находятся в `public/branding/`:
+
+- `nepomka-logo.webp` — основной горизонтальный логотип;
+- `nepomka-favicon.png` — компактный знак для вкладки браузера и малых состояний;
+- `nepomka-apple-touch-icon.png` — touch icon;
+- `danil-hero.webp` — утверждённый hero-визуал.
+
+CI фиксирует Git blob SHA основного логотипа и hero-визуала. Случайная замена валидным, но неутверждённым изображением должна ломать quality gate.
 
 ## Локальный запуск
 
@@ -60,4 +74,4 @@ Workflow `.github/workflows/deploy.yml` запускается только по
 
 Редакционный `src/content/cases/case-template.md` всегда остаётся непубличным.
 
-Полные правила подготовки контактов, кейсов и фотографий: [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md).
+Полные правила подготовки контактов, кейсов и визуальных материалов: [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md).
