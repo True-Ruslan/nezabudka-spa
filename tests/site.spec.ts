@@ -111,9 +111,9 @@ test('supports keyboard navigation and visible focus', async ({ page }) => {
   expect(outline).not.toBe('none');
 });
 
-test('serves an intentional custom 404 with base-safe recovery links', async ({ page }) => {
-  const response = await page.goto('./missing-route-for-test');
-  expect(response?.status()).toBe(404);
+test('renders the generated custom 404 with base-safe recovery links', async ({ page }) => {
+  const response = await page.goto('./404.html');
+  expect(response?.status()).toBe(200);
 
   await expect(page.getByRole('heading', { name: /страница не найдена/i })).toBeVisible();
   await expect(page.getByRole('link', { name: /на главную/i })).toHaveAttribute('href', '/nezabudka-spa/');
