@@ -81,15 +81,20 @@ jobs:
 
           curl --fail --location --silent --show-error \
             --retry 6 --retry-delay 3 --retry-all-errors \
-            "$PAGE_URL" -o /tmp/nezabudka-home.html
-          grep -q 'Автомобили без догадок' /tmp/nezabudka-home.html
-          grep -q 'NEZABUDKA' /tmp/nezabudka-home.html
+            "$PAGE_URL" -o /tmp/nepomka-home.html
+          grep -q 'Автомобили без догадок' /tmp/nepomka-home.html
+          grep -q 'Nepomka' /tmp/nepomka-home.html
+          grep -q 'Непомнящий Данил Александрович' /tmp/nepomka-home.html
+          if grep -q 'NEZABUDKA' /tmp/nepomka-home.html; then
+            echo 'Legacy NEZABUDKA branding is still present in production.' >&2
+            exit 1
+          fi
 
-          missing_url="${PAGE_URL%/}/__nezabudka-v011-404-smoke__"
+          missing_url="${PAGE_URL%/}/__nepomka-v012-404-smoke__"
           status=$(curl --location --silent --show-error \
             --retry 3 --retry-delay 2 --retry-all-errors \
-            --output /tmp/nezabudka-404.html \
+            --output /tmp/nepomka-404.html \
             --write-out '%{http_code}' \
             "$missing_url")
           test "$status" = '404'
-          grep -q 'Страница не найдена' /tmp/nezabudka-404.html
+          grep -q 'Страница не найдена' /tmp/nepomka-404.html
