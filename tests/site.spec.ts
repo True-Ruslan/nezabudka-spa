@@ -111,6 +111,38 @@ test('supports keyboard navigation and visible focus', async ({ page }) => {
   expect(outline).not.toBe('none');
 });
 
+test('renders the generated custom 404 with base-safe recovery links', async ({ page }) => {
+  const response = await page.goto('./404.html');
+  expect(response?.status()).toBe(200);
+
+  await expect(page.getByRole('heading', { name: /страница не найдена/i })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'На главную', exact: true })).toHaveAttribute(
+    'href',
+    '/nezabudka-spa/',
+  );
+  await expect(page.getByRole('link', { name: /контакт/i })).toHaveAttribute(
+    'href',
+    '/nezabudka-spa/#contact',
+  );
+});
+
+test('mobile menu closes with Escape and returns focus to its button', async ({ page, isMobile }) => {
+  test.skip(!isMobile, 'mobile-only interaction');
+  await page.goto('./');
+
+  const button = page.locator('[data-menu-button]');
+  await expect(button).toHaveAccessibleName('Открыть меню');
+  await button.click();
+  await expect(button).toHaveAttribute('aria-expanded', 'true');
+  await expect(button).toHaveAccessibleName('Закрыть меню');
+
+  await page.keyboard.press('Escape');
+
+  await expect(button).toHaveAttribute('aria-expanded', 'false');
+  await expect(button).toHaveAccessibleName('Открыть меню');
+  await expect(button).toBeFocused();
+});
+
 test('renders without page errors and captures a visual baseline', async ({ page }, testInfo) => {
   const pageErrors: string[] = [];
   page.on('pageerror', (error) => pageErrors.push(error.message));

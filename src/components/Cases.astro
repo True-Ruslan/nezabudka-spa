@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import SectionHeading from './SectionHeading.astro';
 
 const publishedCases = await getCollection('cases', ({ data }) => data.publish);
+const base = import.meta.env.BASE_URL;
 ---
 
 <section class="section section--ink" id="cases" aria-labelledby="cases-title">
@@ -19,12 +20,15 @@ const publishedCases = await getCollection('cases', ({ data }) => data.publish);
       <div class="case-list" data-reveal>
         {publishedCases.map((entry, index) => (
           <article class="case-row">
-            <span class="case-row__number">{String(index + 1).padStart(2, '0')}</span>
-            <div>
-              <p class="case-row__vehicle">{entry.data.vehicle} / {entry.data.context}</p>
-              <h3>{entry.data.title}</h3>
-              <p>{entry.data.summary}</p>
-            </div>
+            <a class="case-row__link" href={`${base}cases/${entry.id}/`}>
+              <span class="case-row__number">{String(index + 1).padStart(2, '0')}</span>
+              <div>
+                <p class="case-row__vehicle">{entry.data.vehicle} / {entry.data.context}</p>
+                <h3>{entry.data.title}</h3>
+                <p>{entry.data.summary}</p>
+                <span class="case-row__more">Открыть разбор →</span>
+              </div>
+            </a>
           </article>
         ))}
       </div>
@@ -39,3 +43,50 @@ const publishedCases = await getCollection('cases', ({ data }) => data.publish);
     )}
   </div>
 </section>
+
+<style>
+  .case-row {
+    display: block;
+  }
+
+  .case-row__link {
+    display: grid;
+    grid-template-columns: 100px minmax(0, 1fr);
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .case-row__link:focus-visible {
+    outline: 2px solid var(--blue);
+    outline-offset: 6px;
+  }
+
+  .case-row__more {
+    display: inline-block;
+    margin-top: 20px;
+    color: #aab3ba;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    transition: color 160ms var(--ease), transform 160ms var(--ease);
+  }
+
+  .case-row__link:hover .case-row__more {
+    color: var(--white);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 720px) {
+    .case-row__link {
+      grid-template-columns: 52px minmax(0, 1fr);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .case-row__more {
+      transition: none;
+    }
+  }
+</style>
