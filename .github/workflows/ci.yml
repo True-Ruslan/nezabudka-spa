@@ -50,7 +50,7 @@ jobs:
       - name: Verify static build integrity
         run: npm run verify:build
 
-      - name: Prove static verifier rejects broken references
+      - name: Prove static verifier rejects broken references and canonical drift
         run: |
           cp dist/index.html /tmp/nepomka-index.html
           node --input-type=module <<'NODE'
@@ -68,6 +68,25 @@ jobs:
           NODE
           if npm run verify:build; then
             echo 'Static verifier accepted a deliberately broken local reference.' >&2
+            exit 1
+          fi
+          mv /tmp/nepomka-index.html dist/index.html
+          npm run verify:build
+
+          cp dist/index.html /tmp/nepomka-index.html
+          node --input-type=module <<'NODE'
+          import { readFileSync, writeFileSync } from 'node:fs';
+          const file = 'dist/index.html';
+          const html = readFileSync(file, 'utf8');
+          const changed = html.replace(
+            /(<link[^>]+rel=["']canonical["'][^>]+href=["'])[^"']+(["'])/i,
+            '$1https://wrong.example/$2',
+          );
+          if (changed === html) throw new Error('Expected canonical link in generated home page');
+          writeFileSync(file, changed);
+          NODE
+          if npm run verify:build; then
+            echo 'Static verifier accepted a deliberately incorrect canonical URL.' >&2
             exit 1
           fi
           mv /tmp/nepomka-index.html dist/index.html

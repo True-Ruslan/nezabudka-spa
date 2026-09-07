@@ -72,12 +72,30 @@ test('keeps navigation usable and base-path safe', async ({ page, isMobile }) =>
   await expect(contactLinks.first()).toBeVisible();
 });
 
-test('offers the supplied contact channels and an accessible FAQ', async ({ page }) => {
+test('offers the supplied contact channels and opens social links safely', async ({ page }) => {
   await page.goto('./#contact');
   const contact = page.locator('#contact');
-  await expect(contact.getByRole('link', { name: /Написать в VK/ })).toHaveAttribute('href', 'https://vk.ru/boypocek');
+  const vkLink = contact.getByRole('link', { name: /Написать в VK/ });
+  await expect(vkLink).toHaveAttribute('href', 'https://vk.ru/boypocek');
+  await expect(vkLink).toHaveAttribute('target', '_blank');
+  await expect(vkLink).toHaveAttribute('rel', 'noopener noreferrer');
   await expect(contact.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+79045328772');
-  await expect(contact.getByRole('link', { name: /Instagram/ })).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
+
+  const instagramLink = contact.getByRole('link', { name: /Instagram/ });
+  await expect(instagramLink).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
+  await expect(instagramLink).toHaveAttribute('target', '_blank');
+  await expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+  const aboutInstagramLink = page.getByRole('link', { name: /Мой Instagram/ });
+  await expect(aboutInstagramLink).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
+  await expect(aboutInstagramLink).toHaveAttribute('target', '_blank');
+  await expect(aboutInstagramLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+  const mobileVkLink = page.locator('.mobile-contact');
+  await expect(mobileVkLink).toHaveAttribute('href', 'https://vk.ru/boypocek');
+  await expect(mobileVkLink).toHaveAttribute('target', '_blank');
+  await expect(mobileVkLink).toHaveAttribute('rel', 'noopener noreferrer');
+
   const question = page.locator('summary').filter({ hasText: 'Почему часть цен указана «от»?' });
   await question.click();
   await expect(page.getByText('Цена осмотра и подбора зависит от модели', { exact: false })).toBeVisible();
