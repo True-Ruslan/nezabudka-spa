@@ -43,7 +43,7 @@ test('uses a high-resolution portrait-shaped hero asset without aggressive later
   expect(portraitMetrics.naturalHeight).toBeGreaterThanOrEqual(1400);
   expect(portraitMetrics.naturalWidth / portraitMetrics.naturalHeight).toBeLessThan(0.85);
   expect(portraitMetrics.objectFit).toBe('cover');
-  expect(portraitMetrics.objectPosition).toBe('50% 50%');
+  expect(portraitMetrics.objectPosition).toBe('50% 16%');
 
   await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
     'href',
