@@ -37,19 +37,37 @@
 - [x] Зафиксировать exact asset integrity через Git blob hash-gate
 - [x] Проверять бренд и hero в desktop/mobile Playwright screenshots
 
-## v0.2 — Verified content
+## Commercial foundation — 2026-09-07
 
-- [ ] Добавить подтверждённые контакты Данила
-- [ ] Опубликовать первые реальные кейсы через content collection
-- [ ] При наличии — добавить проверяемые внешние профили/соцсети
-- [ ] При необходимости добавить реальные редакционные фотографии в About/кейсы
+- [x] Подключить production domain `nepomka.ru`
+- [x] Опубликовать подтверждённые телефон, VK и Instagram
+- [x] Зафиксировать Белгород как основной город и онлайн/очный формат
+- [x] Упаковать коммерческие предложения и стартовые цены
+- [x] Добавить понятный процесс работы и FAQ
+- [x] Скрывать пустую секцию кейсов до появления реальных материалов
+- [ ] Опубликовать первые документированные реальные кейсы
+- [ ] При наличии разрешения добавить отзывы и рабочие фотографии
 
-## v0.3 — Domain and measurement
+## Repository hygiene
 
-- [ ] Купить и подключить собственный домен
-- [ ] Включить Enforce HTTPS после проверки DNS
-- [ ] При необходимости добавить privacy-friendly analytics
-- [ ] Проверить индексацию и Search Console/Яндекс Вебмастер после появления финального домена
+- [x] Запускать CI автоматически только для PR в `main` и push в `main`
+- [x] Отменять superseded CI runs одной ветки через `concurrency`
+- [x] Убрать отдельный manual bypass GitHub Pages deployment
+- [x] Сократить хранение visual artifacts и Playwright reports до полезных сценариев
+- [x] Включить Dependabot для npm и GitHub Actions
+- [x] Удалить неиспользуемые legacy `public/brand-mark.svg` и `public/favicon.svg`
+- [ ] Включить ruleset для `main`: PR required, status check `quality`, linear history, запрет force-push/delete
+- [ ] Включить automatic deletion of merged head branches
+- [ ] Удалить уже слитые и временные исторические ветки
+- [ ] Нормализовать merge policy: squash-only; при необходимости включить auto-merge и update branch
+- [ ] Заполнить repository description/homepage/topics и отключить неиспользуемые Wiki/Projects
+
+## Measurement / SEO
+
+- [ ] Добавить privacy-friendly analytics, если появляется потребность измерять воронку
+- [ ] Проверить Google Search Console и Яндекс Вебмастер
+- [ ] Проверить индексирование sitemap, canonical и ключевых страниц
+- [ ] После появления реального контента рассмотреть отдельные страницы услуг и практические публикации
 
 ## Не делать без данных и разрешения
 
