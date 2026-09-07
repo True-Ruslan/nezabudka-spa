@@ -1,32 +1,19 @@
 ---
 import { contact } from '../data/site';
-
-const channels = [
-  contact.telegram && { label: 'Telegram', href: `https://t.me/${contact.telegram.replace(/^@/, '')}` },
-  contact.email && { label: 'Email', href: `mailto:${contact.email}` },
-  contact.phone && { label: 'Телефон', href: `tel:${contact.phone.replace(/[^+\d]/g, '')}` },
-].filter(Boolean) as Array<{ label: string; href: string }>;
 ---
-
 <section class="contact-section" id="contact" aria-labelledby="contact-title">
-  <div class="shell contact-grid" data-reveal>
+  <div class="shell contact-grid">
     <div>
-      <p class="section-heading__label">06 / КОНТАКТ</p>
-      <h2 id="contact-title">Есть вопрос по автомобилю, запчастям или автобизнесу?</h2>
+      <p class="section-heading__label">05 / НА СВЯЗИ</p>
+      <h2 id="contact-title">Что происходит<br />с вашим автомобилем?</h2>
+      <p class="contact-intro">Белгород · онлайн и очно. Ближайшие населённые пункты — по договорённости.</p>
     </div>
     <div class="contact-section__action">
-      {channels.length > 0 ? (
-        <div class="contact-links">
-          {channels.map((channel) => (
-            <a class="button button--light" href={channel.href}>{channel.label} <span aria-hidden="true">↗</span></a>
-          ))}
-        </div>
-      ) : (
-        <div class="contact-pending">
-          <p>Прямые контакты будут добавлены после согласования публикации.</p>
-          <span>Никаких вымышленных адресов и аккаунтов.</span>
-        </div>
-      )}
+      <a class="button button--light" href={contact.vk}>Написать в VK <span aria-hidden="true">↗</span></a>
+      <a class="contact-phone" href={`tel:${contact.phone}`}>+7 904 532-87-72</a>
+      <p>Для первого сообщения: марка и модель, пробег, ваш вопрос. Смета или список деталей помогут быстрее понять контекст и подтвердить стоимость.</p>
+      <a class="contact-social" href={contact.instagram}>Instagram · nepomka.d <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>
+<a class="mobile-contact" href={contact.vk}>Написать Данилу в VK <span aria-hidden="true">↗</span></a>

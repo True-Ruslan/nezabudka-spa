@@ -4,12 +4,11 @@ import Header from '../components/Header.astro';
 import Hero from '../components/Hero.astro';
 import Expertise from '../components/Expertise.astro';
 import Cases from '../components/Cases.astro';
-import Experience from '../components/Experience.astro';
-import HelpPaths from '../components/HelpPaths.astro';
-import Principles from '../components/Principles.astro';
 import About from '../components/About.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
+import Process from '../components/Process.astro';
+import FAQ from '../components/FAQ.astro';
 ---
 
 <BaseLayout>
@@ -17,17 +16,10 @@ import Footer from '../components/Footer.astro';
   <main id="main">
     <Hero />
     <Expertise />
-    <div class="credo-band" aria-label="Принцип работы">
-      <div class="shell credo-band__inner" data-reveal>
-        <p>Хорошее решение всегда начинается с правильных вопросов.</p>
-        <span>CONTEXT → CAUSE → DECISION</span>
-      </div>
-    </div>
     <Cases />
-    <Experience />
-    <HelpPaths />
-    <Principles />
+    <Process />
     <About />
+    <FAQ />
     <Contact />
   </main>
   <Footer />

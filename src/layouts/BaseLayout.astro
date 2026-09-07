@@ -1,20 +1,22 @@
 ---
 import '../styles/global.css';
-import { brand } from '../data/site';
+import { brand, contact, offers } from '../data/site';
 
 interface Props {
   title?: string;
   description?: string;
+  includeStructuredData?: boolean;
 }
 
 const {
-  title = `${brand.name} — ${brand.person} | ${brand.descriptor}`,
+  title = `Автоподбор в Белгороде — Данил Непомнящий | ${brand.name}`,
   description = brand.description,
+  includeStructuredData = true,
 } = Astro.props;
 
 const base = import.meta.env.BASE_URL;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = new URL(`${base}branding/danil-hero.webp`, Astro.site);
+const ogImage = new URL(`${base}branding/og-cover.png`, Astro.site);
 const personJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -23,7 +25,25 @@ const personJsonLd = {
   jobTitle: brand.descriptor,
   description,
   image: ogImage.href,
-  url: canonical.href,
+  url: new URL(base, Astro.site).href,
+  telephone: contact.phone,
+  sameAs: [contact.vk, contact.instagram],
+  areaServed: {
+    '@type': 'City',
+    name: 'Белгород',
+  },
+  makesOffer: offers.map((offer) => ({
+    '@type': 'Offer',
+    ...(offer.price.startsWith('от ')
+      ? {}
+      : { price: offer.priceValue, priceCurrency: 'RUB' }),
+    description: `${offer.price}. ${offer.prepare}`,
+    itemOffered: {
+      '@type': 'Service',
+      name: offer.title,
+      areaServed: offer.mode === 'ОНЛАЙН' ? 'Россия, онлайн' : 'Белгород и ближайшая география по договорённости',
+    },
+  })),
 };
 ---
 
@@ -32,7 +52,7 @@ const personJsonLd = {
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#f1f0eb" />
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -51,7 +71,7 @@ const personJsonLd = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <title>{title}</title>
-    <script type="application/ld+json" is:inline set:html={JSON.stringify(personJsonLd)} />
+    {includeStructuredData && <script type="application/ld+json" is:inline set:html={JSON.stringify(personJsonLd)} />}
   </head>
   <body>
     <a class="skip-link" href="#main">Перейти к содержанию</a>

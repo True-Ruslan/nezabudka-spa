@@ -29,6 +29,7 @@ const base = hasExplicitBasePath
 
 export default defineConfig({
   output: 'static',
+  devToolbar: { enabled: false },
   site,
   base,
   trailingSlash: 'always',

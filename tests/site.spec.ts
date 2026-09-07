@@ -1,35 +1,21 @@
 import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
-const requiredSections = ['expertise', 'cases', 'experience', 'help', 'principles', 'about', 'contact'];
-
-test('presents Danil under the Nepomka brand without fabricated proof', async ({ page }) => {
+test('presents actionable services without fabricated proof', async ({ page }) => {
   await page.goto('./');
-
-  await expect(
-    page.getByRole('heading', { level: 1, name: 'Непомнящий Данил Александрович' }),
-  ).toBeVisible();
-  await expect(page.getByText('Автомобили без догадок.', { exact: true })).toBeVisible();
-  await expect(page.locator('[data-brand-logo]')).toBeVisible();
-  await expect(page.getByText('NEZABUDKA', { exact: true })).toHaveCount(0);
-  await expect(page.getByText('DANIL NEPOMNYASHCHIY', { exact: true })).toHaveCount(0);
-  await expect(page.getByText('Состояние автомобиля', { exact: true })).toBeVisible();
-  await expect(page.getByText('Обслуживание', { exact: true })).toBeVisible();
-  await expect(page.getByText('Запчасти', { exact: true })).toBeVisible();
-  await expect(page.getByText('Автобизнес', { exact: true })).toBeVisible();
-
-  for (const id of requiredSections) {
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Без догадок.');
+  await expect(page.locator('.offer')).toHaveCount(6);
+  for (const id of ['expertise', 'process', 'about', 'faq', 'contact']) {
     await expect(page.locator(`#${id}`)).toHaveCount(1);
   }
-
-  await expect(page.getByRole('heading', { name: 'Автовладельцам', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Автобизнесу', exact: true })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Как я принимаю решения', exact: true })).toBeVisible();
-
-  await expect(page.getByText(/100\+ автомобилей/i)).toHaveCount(0);
-  await expect(page.getByText(/5\.0|отзыв/i)).toHaveCount(0);
-  await expect(page.getByText(/сертифицирован/i)).toHaveCount(0);
-  await expect(page.getByText(/шаблон кейса/i)).toHaveCount(0);
+  await expect(page.locator('#cases')).toHaveCount(0);
+  await expect(page.getByText(/вымышлен|выдуман|контакты будут/i)).toHaveCount(0);
+  await expect(page.getByText(/Белгород · онлайн и очно/).first()).toBeVisible();
+  await expect(page.getByText('3 900 ₽', { exact: true })).toBeVisible();
+  await expect(page.getByText('2 900 ₽', { exact: true })).toBeVisible();
+  await expect(page.getByText('от 8 900 ₽', { exact: true })).toBeVisible();
+  await expect(page.getByText('от 38 000 ₽', { exact: true })).toBeVisible();
+  await expect(page.getByText('от 16 000 ₽', { exact: true })).toBeVisible();
 });
 
 test('uses a high-resolution portrait-shaped hero asset without aggressive lateral cropping', async ({ page }) => {
@@ -67,7 +53,7 @@ test('uses a high-resolution portrait-shaped hero asset without aggressive later
     'href',
     '/nezabudka-spa/branding/nepomka-apple-touch-icon.png',
   );
-  await expect(page).toHaveTitle(/Nepomka.*Непомнящий Данил Александрович/);
+  await expect(page).toHaveTitle(/Данил Непомнящий.*Nepomka/);
 });
 
 test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
@@ -77,7 +63,7 @@ test('keeps navigation usable and base-path safe', async ({ page, isMobile }) =>
     await page.getByRole('button', { name: 'Открыть меню' }).click();
   }
 
-  const expertiseLink = page.getByRole('link', { name: 'Экспертиза' }).first();
+  const expertiseLink = page.getByRole('link', { name: 'С чем помогу' }).first();
   await expect(expertiseLink).toHaveAttribute('href', /#expertise$/);
   await expertiseLink.click();
   await expect(page.locator('#expertise')).toBeInViewport();
@@ -86,15 +72,15 @@ test('keeps navigation usable and base-path safe', async ({ page, isMobile }) =>
   await expect(contactLinks.first()).toBeVisible();
 });
 
-test('renders an honest contact state until verified details are supplied', async ({ page }) => {
+test('offers the supplied contact channels and an accessible FAQ', async ({ page }) => {
   await page.goto('./#contact');
-
   const contact = page.locator('#contact');
-  await expect(contact).toContainText(/контакт/i);
-  await expect(contact).toContainText(/добав/i);
-  await expect(contact.locator('a[href^="mailto:"]')).toHaveCount(0);
-  await expect(contact.locator('a[href^="tel:"]')).toHaveCount(0);
-  await expect(contact.locator('a[href*="t.me/"]')).toHaveCount(0);
+  await expect(contact.getByRole('link', { name: /Написать в VK/ })).toHaveAttribute('href', 'https://vk.ru/boypocek');
+  await expect(contact.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+79045328772');
+  await expect(contact.getByRole('link', { name: /Instagram/ })).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
+  const question = page.locator('summary').filter({ hasText: 'Почему часть цен указана «от»?' });
+  await question.click();
+  await expect(page.getByText('Цена осмотра и подбора зависит от модели', { exact: false })).toBeVisible();
 });
 
 test('publishes canonical metadata for the GitHub Pages project path', async ({ page }) => {
@@ -111,9 +97,18 @@ test('publishes canonical metadata for the GitHub Pages project path', async ({ 
   await expect(page.locator('meta[property="og:site_name"]')).toHaveAttribute('content', 'Nepomka');
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
     'content',
-    'https://true-ruslan.github.io/nezabudka-spa/branding/danil-hero.webp',
+    'https://true-ruslan.github.io/nezabudka-spa/branding/og-cover.png',
   );
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/nezabudka-spa/site.webmanifest');
+
+  const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
+  const person = JSON.parse(jsonLd ?? '{}');
+  const fixedOffer = person.makesOffer.find((offer: { itemOffered: { name: string } }) =>
+    offer.itemOffered.name === 'Разобраться в рекомендациях сервиса');
+  const variableOffer = person.makesOffer.find((offer: { itemOffered: { name: string } }) =>
+    offer.itemOffered.name === 'Подобрать автомобиль с пробегом');
+  expect(fixedOffer.price).toBe(3900);
+  expect(variableOffer.price).toBeUndefined();
 });
 
 test('has no horizontal overflow on mobile', async ({ page, isMobile }) => {
@@ -172,6 +167,7 @@ test('renders the generated custom 404 with base-safe recovery links', async ({ 
     'href',
     '/nezabudka-spa/#contact',
   );
+  await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(0);
 });
 
 test('mobile menu closes with Escape and returns focus to its button', async ({ page, isMobile }) => {

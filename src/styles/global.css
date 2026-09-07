@@ -635,3 +635,62 @@ h3 {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
   .js [data-reveal] { opacity: 1; transform: none; }
 }
+
+/* Client journey: services, process and a direct contact. */
+section[id], main[id] { scroll-margin-top: 100px; }
+.editorial-title { max-width: 900px; margin: 0 0 44px; font-size: clamp(34px, 4.3vw, 62px); font-weight: 500; line-height: 1.08; letter-spacing: -.045em; }
+.hero h1 span { color: var(--blue); }
+.hero__grid { min-height: 620px; }
+.hero__copy { padding-block: 58px; }
+.hero__location { margin: -14px 0 28px; color: var(--ink); font-size: 14px; font-weight: 600; }
+.hero__secondary { padding: 12px 0; font-size: 15px; text-decoration: underline; text-underline-offset: 5px; }
+.hero__caption { max-width: 350px; margin: 24px 0 0; color: var(--steel); font-size: 14px; }
+.offer-grid, .process-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 32px; }
+.offer { display: flex; flex-direction: column; border-top: 1px solid var(--line); padding: 28px 0 0; }
+.offer__meta { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+.offer__meta strong { color: var(--ink); font-size: 24px; font-weight: 600; white-space: nowrap; }
+.offer__index { color: var(--steel); font-family: var(--font-mono); font-size: 13px; }
+.offer__situation { min-height: 52px; margin: 28px 0 16px; color: var(--steel); }
+.offer h3 { font-size: 25px; line-height: 1.2; letter-spacing: -.025em; }
+.offer > p:not(.offer__situation) { color: #454c52; }
+.offer__prepare { margin-top: auto; padding-top: 20px; font-size: 14px; }
+.text-link { display: inline-flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 48px; color: var(--blue); text-decoration: underline; text-underline-offset: 5px; font-weight: 600; }
+.section-note { margin: 36px 0 0; font-size: 14px; color: var(--steel); }
+.process-grid { list-style: none; padding: 0; margin: 0; }
+.process-grid li { padding-top: 24px; border-top: 1px solid var(--line-dark); }
+.process-grid h3 { margin: 28px 0 12px; font-size: 23px; }
+.process-grid p, .process-note, .section--ink .section-heading__label, .section--ink .offer__index { color: #bcc4cb; }
+.process-note { margin: 40px 0 0; font-size: 14px; }
+.faq-grid { display: grid; grid-template-columns: .8fr 1.2fr; gap: 80px; }
+.faq-list details { border-top: 1px solid var(--line); }
+.faq-list details:last-child { border-bottom: 1px solid var(--line); }
+.faq-list summary { cursor: pointer; padding: 24px 8px 24px 0; font-size: 20px; font-weight: 500; }
+.faq-list summary:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
+.faq-list details p { max-width: 620px; padding-bottom: 16px; color: #454c52; }
+.contact-section h2 { font-size: clamp(36px,4.5vw,65px); line-height: 1.08; }
+.contact-intro { max-width: 500px; margin: 26px 0 0; font-size: 19px; }
+.contact-section .section-heading__label { color: white; }
+.contact-phone { display: block; width: fit-content; margin: 24px 0 14px; font-size: 26px; text-decoration: underline; text-underline-offset: 6px; }
+.contact-social { display: inline-block; padding-block: 12px; text-decoration: underline; text-underline-offset: 5px; }
+.contact-section__action p { line-height: 1.6; }
+.mobile-contact { display: none; }
+@media (min-width: 761px) and (max-width: 1000px) {
+  .offer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  section[id] { scroll-margin-top: 84px; }
+  .hero__copy { padding: 34px 0 28px; }
+  .hero__grid { min-height: 0; }
+  .hero__actions { gap: 8px; }
+  .hero__caption { margin-top: 12px; }
+  .hero__location { margin-top: -10px; margin-bottom: 20px; font-size: 13px; }
+  .hero__secondary { text-align: center; width: 100%; }
+  .offer-grid, .process-grid, .faq-grid { grid-template-columns: 1fr; gap: 28px; }
+  .offer__situation { min-height: 0; margin-top: 16px; }
+  .offer h3 { max-width: 340px; }
+  .offer__prepare { padding-top: 4px; }
+  .editorial-title { margin-bottom: 28px; }
+  .mobile-contact { position: fixed; display: flex; justify-content: space-between; align-items: center; bottom: 0; inset-inline: 0; z-index: 45; min-height: 58px; padding: 16px 20px calc(16px + env(safe-area-inset-bottom)); background: var(--blue); color: white; border-top: 1px solid #ffffff55; font-weight: 600; }
+  body { padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+  .faq-grid { gap: 0; }
+}

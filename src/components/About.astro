@@ -1,22 +1,13 @@
 ---
-import SectionHeading from './SectionHeading.astro';
+import { contact } from '../data/site';
 ---
-
-<section class="section section--paper" id="about" aria-labelledby="about-title">
-  <div class="shell">
-    <SectionHeading index="05" label="ОБО МНЕ" title="Больше, чем просто интерес к автомобилям." />
-    <div class="about-grid" data-reveal>
-      <p class="about-grid__lead">
-        Мне интересно понимать, почему машина ведёт себя именно так, почему одна деталь подходит лучше другой и где заканчивается реальная необходимость и начинается лишняя работа.
-      </p>
-      <div class="about-grid__body">
-        <p>
-          Поэтому опыт складывался из разных областей: детейлинга, приёмки автомобилей, продажи запчастей и работы с частными клиентами. Сейчас к этому добавляется интерес к B2B-сервисам автомобильного рынка.
-        </p>
-        <p>
-          Общий принцип остаётся тем же: сначала собрать контекст, затем принять решение и уметь нормально объяснить его человеку по другую сторону разговора.
-        </p>
-      </div>
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="shell about-grid">
+    <div><p class="section-heading__label">03 / ОБО МНЕ</p><h2 class="editorial-title" id="about-title">Данил Непомнящий.<br />Автомобили без догадок.</h2></div>
+    <div class="about-grid__body">
+      <p>Мой опыт связан с детейлингом, приёмкой автомобилей, запчастями и работой с частными клиентами. Мне важно понимать не только отдельную деталь, но и задачу владельца.</p>
+      <p>Сначала собираю информацию, затем обсуждаю варианты. Объясняю обычным языком, что известно, а что ещё предстоит проверить.</p>
+      <a class="text-link" href={contact.instagram}>Мой Instagram <span aria-hidden="true">↗</span></a>
     </div>
   </div>
 </section>

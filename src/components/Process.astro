@@ -1,0 +1,20 @@
+---
+const steps = [
+  ['Расскажите о задаче', 'Напишите, что произошло и какое решение нужно принять. Приложите имеющиеся материалы.'],
+  ['Подтвердим формат', 'Выберем онлайн или очную услугу, сверим объём и окончательную стоимость до начала.'],
+  ['Разберём следующие шаги', 'Обсудим варианты, вопросы к сервису и то, что ещё нужно проверить.'],
+];
+---
+<section class="section section--ink" id="process" aria-labelledby="process-title">
+  <div class="shell">
+    <p class="section-heading__label">02 / КАК РАБОТАЕМ</p>
+    <h2 class="editorial-title" id="process-title">Сначала разобраться.<br />Потом принимать решение.</h2>
+    <ol class="process-grid">
+      {steps.map(([title, description], index) => <li>
+        <span class="offer__index">0{index + 1}</span>
+        <h3>{title}</h3><p>{description}</p>
+      </li>)}
+    </ol>
+    <p class="process-note">Если задача требует осмотра или диагностики, переписка их не заменит.</p>
+  </div>
+</section>

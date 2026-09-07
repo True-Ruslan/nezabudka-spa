@@ -141,3 +141,12 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .vite/
+.astro/
+
+# Local browser-test output
+artifacts/
+test-results/
+playwright-report/
+
+# Local IDE settings
+.idea/
