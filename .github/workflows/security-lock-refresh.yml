@@ -1,0 +1,61 @@
+name: Security lock refresh
+
+on:
+  push:
+    branches:
+      - fix/security-dependency-upgrade
+
+permissions:
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Refresh package lock
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Show resolved security-sensitive dependencies
+        run: npm ls astro sharp esbuild @astrojs/sitemap @astrojs/check
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Astro check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Verify static build integrity
+        run: npm run verify:build
+
+      - name: Browser tests
+        run: npm run test:e2e
+
+      - name: Audit dependency tree
+        run: npm audit --audit-level=low
+
+      - name: Upload refreshed lockfile
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: security-lock-refresh
+          path: package-lock.json
+          if-no-files-found: error
+          retention-days: 1
