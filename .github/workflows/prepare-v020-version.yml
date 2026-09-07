@@ -1,0 +1,47 @@
+name: Prepare package metadata
+
+on:
+  push:
+    branches:
+      - feat/v0.2-service-pages-seo
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v7
+        with:
+          ref: feat/v0.2-service-pages-seo
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - name: Update project version
+        run: npm version 0.2.0 --no-git-tag-version
+
+      - name: Verify package metadata
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const manifest = JSON.parse(readFileSync('package.json', 'utf8'));
+          const lock = JSON.parse(readFileSync('package-lock.json', 'utf8'));
+          if (manifest.version !== '0.2.0') throw new Error('package.json version mismatch');
+          if (lock.version !== '0.2.0') throw new Error('package-lock.json version mismatch');
+          if (lock.packages?.['']?.version !== '0.2.0') throw new Error('root lock package version mismatch');
+          NODE
+          git diff --check
+
+      - name: Commit package metadata
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add package.json package-lock.json
+          git commit -m 'chore: bump package version to 0.2.0'
+          git push origin HEAD:feat/v0.2-service-pages-seo
