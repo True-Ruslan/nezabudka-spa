@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+### Changed
+
+- текстовые directional glyphs `↗`, `→` и `←` в пользовательских CTA/навигации заменены на единый набор декоративных inline SVG icons, чтобы desktop/mobile rendering не зависел от системного шрифта или emoji substitution;
+- primary, secondary и back-навигация получили согласованные направления и лёгкое hover-движение с поддержкой `prefers-reduced-motion`.
+
 ## 0.2.0 — 2026-09-07
 
 ### Added
