@@ -30,7 +30,7 @@ jobs:
           test "$(git hash-object public/branding/nepomka-logo.webp)" = "9ee4c20c66b334e824d219df7ea4d5919d9cbe43"
 
       - name: Setup Node
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
