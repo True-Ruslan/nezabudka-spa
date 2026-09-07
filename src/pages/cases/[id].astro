@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
+import ArrowIcon from '../../components/ArrowIcon.astro';
 import CaseDetail from '../../components/CaseDetail.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
@@ -23,7 +24,7 @@ const base = import.meta.env.BASE_URL;
 <BaseLayout title={`${entry.data.title} — Данил Непомнящий`} description={entry.data.summary}>
   <main id="main" class="case-page">
     <div class="shell">
-      <a class="case-page__back" href={`${base}#cases`}>← Все разборы</a>
+      <a class="case-page__back" href={`${base}#cases`}><ArrowIcon direction="left" /> <span>Все разборы</span></a>
       <CaseDetail entry={entry} />
     </div>
   </main>
@@ -38,6 +39,8 @@ const base = import.meta.env.BASE_URL;
 
   .case-page__back {
     display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-top: 28px;
     padding: 10px 0;
     color: var(--steel);
