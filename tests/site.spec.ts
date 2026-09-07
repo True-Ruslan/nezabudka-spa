@@ -91,7 +91,8 @@ test('offers the supplied contact channels and opens social links safely', async
   await expect(aboutInstagramLink).toHaveAttribute('target', '_blank');
   await expect(aboutInstagramLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-  const mobileVkLink = page.getByRole('link', { name: /Написать Данилу в VK/ });
+  const mobileVkLink = page.locator('.mobile-contact');
+  await expect(mobileVkLink).toHaveAttribute('href', 'https://vk.ru/boypocek');
   await expect(mobileVkLink).toHaveAttribute('target', '_blank');
   await expect(mobileVkLink).toHaveAttribute('rel', 'noopener noreferrer');
 
