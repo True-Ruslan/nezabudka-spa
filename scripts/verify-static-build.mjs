@@ -11,6 +11,9 @@ const basePath = normalizeBasePath(hasExplicitBasePath ? process.env.BASE_PATH ?
 const expectedHomeCanonical = `${siteOrigin}${basePath === '/' ? '/' : `${basePath}/`}`;
 const ignoredScheme = /^(?:https?:|mailto:|tel:|data:|javascript:)/i;
 const attributePattern = /\b(?:href|src)=(?:"([^"]*)"|'([^']*)')/gi;
+const linkTagPattern = /<link\b[^>]*>/gi;
+const relAttributePattern = /\brel=(?:"([^"]*)"|'([^']*)')/i;
+const hrefAttributePattern = /\bhref=(?:"([^"]*)"|'([^']*)')/i;
 const errors = [];
 
 function normalizeBasePath(value) {
@@ -30,6 +33,19 @@ function isLocalReference(value) {
 
 function stripQueryAndHash(value) {
   return value.split(/[?#]/, 1)[0];
+}
+
+function extractCanonicalHref(html) {
+  for (const match of html.matchAll(linkTagPattern)) {
+    const tag = match[0];
+    const relMatch = tag.match(relAttributePattern);
+    const rel = relMatch?.[1] ?? relMatch?.[2] ?? '';
+    if (!rel.split(/\s+/).includes('canonical')) continue;
+
+    const hrefMatch = tag.match(hrefAttributePattern);
+    return hrefMatch?.[1] ?? hrefMatch?.[2] ?? null;
+  }
+  return null;
 }
 
 async function exists(filePath) {
@@ -134,12 +150,8 @@ if (await exists(distRoot)) {
 
 if (await exists(path.join(distRoot, 'index.html'))) {
   const homeHtml = await readFile(path.join(distRoot, 'index.html'), 'utf8');
-  const escapedCanonical = expectedHomeCanonical.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const canonicalPattern = new RegExp(
-    `<link[^>]+rel=["']canonical["'][^>]+href=["']${escapedCanonical}["']`,
-    'i',
-  );
-  if (!canonicalPattern.test(homeHtml)) {
+  const canonicalHref = extractCanonicalHref(homeHtml);
+  if (canonicalHref !== expectedHomeCanonical) {
     errors.push(`Homepage canonical is not ${expectedHomeCanonical}`);
   }
 }
