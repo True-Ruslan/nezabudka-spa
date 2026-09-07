@@ -1,5 +1,36 @@
 # Changelog
 
+## Unreleased — 2026-09-07
+
+### Added
+
+- production domain `https://nepomka.ru/`;
+- подтверждённые телефон, VK и Instagram;
+- коммерческие предложения для частных клиентов: разбор сметы, сравнение запчастей, проверка и подбор автомобиля, бронеплёнка и тонировка;
+- стартовые цены, ограничения формата услуг, процесс работы и FAQ;
+- отдельный Open Graph cover;
+- `.github/dependabot.yml` для еженедельных обновлений npm dependencies и GitHub Actions.
+
+### Changed
+
+- главная страница переработана из имиджевого портфолио в коммерческий landing с прямым сценарием обращения;
+- пустая секция кейсов скрывается до появления реального `publish: true` материала;
+- CI автоматически запускается только для pull request в `main` и push в `main`; ручной CI остаётся доступен для диагностики;
+- superseded CI runs одной ветки отменяются через `concurrency`;
+- checkout в CI/deploy не сохраняет write credentials;
+- visual screenshots сохраняются для PR, Playwright report — при ошибке, retention сокращён до 7 дней;
+- GitHub Pages deployment запускается только после успешного `CI` в `main`; отдельный `workflow_dispatch` production bypass удалён;
+- `PROJECT_STATE.md` и `ROADMAP.md` синхронизированы с текущим production и repository governance.
+
+### Removed
+
+- неиспользуемый legacy `public/brand-mark.svg`;
+- неиспользуемый legacy `public/favicon.svg`.
+
+### Repository governance
+
+GitHub-level ruleset для `main`, automatic deletion of merged branches и нормализация merge settings остаются отдельными настройками репозитория и не могут быть выражены только файлами в Git tree.
+
 ## 0.1.1 — 2026-09-06
 
 ### Added

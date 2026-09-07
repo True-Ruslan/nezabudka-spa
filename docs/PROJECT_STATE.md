@@ -1,88 +1,74 @@
 # Project State
 
-Обновлено: 2026-09-06
+Обновлено: 2026-09-07
 
 ## Статус
 
-Линия v0.1.x: production foundation/hardening и фирменная идентичность **Nepomka** реализованы. Фактический production release определяется состоянием `main` и последним успешным `Deploy GitHub Pages`; после каждого merge deployment дополнительно проверяет опубликованный сайт по HTTP.
+Nepomka работает как статический коммерческий сайт автомобильного специалиста **Непомнящего Данила Александровича**. Production URL — `https://nepomka.ru/`. Источником истины для production остаётся `main`; публикация выполняется GitHub Pages только после успешного CI для соответствующей ревизии.
 
-## Реализовано
+## Product / UX
 
-### Product / UX
-
-- Astro 6 static site;
-- адаптивная editorial/technical визуальная система Nepomka;
-- основной горизонтальный wordmark, компактный знак, favicon и Apple Touch Icon;
-- hero с утверждённым портретным визуалом на основе предоставленных владельцем референсных фотографий;
-- публичное имя: `Непомнящий Данил Александрович`;
-- Hero, Expertise, Cases, Experience, Help Paths, Principles, About, Contact, Footer;
-- desktop/mobile navigation;
-- Escape закрывает мобильное меню и возвращает keyboard focus на кнопку;
-- собственная base-path-safe страница `404.html`;
+- Astro 6 + TypeScript, полностью статическая сборка;
+- фирменная идентичность Nepomka и утверждённые brand assets;
+- адаптивный desktop/mobile интерфейс без клиентского UI-фреймворка;
+- коммерческий первый экран и шесть предложений: разбор сметы, сравнение запчастей, проверка авто перед покупкой, подбор автомобиля, бронеплёнка и тонировка;
+- опубликованы стартовые цены и ограничения формата услуги;
+- основной город — Белгород, часть услуг доступна онлайн;
+- отдельные секции процесса работы, FAQ, About и Contact;
 - типизированная content collection для автомобильных кейсов;
-- опубликованные (`publish: true`) кейсы автоматически получают статические страницы `/cases/<id>/`;
-- редакционный `case-template.md` не публикуется;
-- честные empty states вместо вымышленных отзывов, кейсов и контактов.
+- `publish: true` автоматически создаёт карточку и route `/cases/<id>/`;
+- при отсутствии опубликованных кейсов пустая секция не показывается;
+- собственная base-path-safe страница `404.html`.
 
-### Accessibility / SEO
+## Контакты и публичные данные
 
-- semantic landmarks, skip link, focus states, reduced motion;
-- canonical, description, Open Graph, Twitter Card, JSON-LD Person, sitemap, robots.txt;
-- Nepomka manifest/favicon и hero Open Graph image;
-- mobile horizontal-overflow regression check.
+Текущие production-данные находятся в `src/data/site.ts`:
 
-### Build / CI / deploy
+- телефон опубликован;
+- VK опубликован;
+- Instagram опубликован;
+- Telegram и email пока не заданы и остаются `null`.
+
+Неизвестные контакты, кейсы, отзывы, сертификаты и метрики не должны заполняться временными или вымышленными значениями.
+
+## Accessibility / SEO
+
+- semantic landmarks, skip link, focus states и reduced motion;
+- canonical, description, Open Graph, Twitter Card, JSON-LD Person/Offer, sitemap, robots.txt и web manifest;
+- отдельный OG cover;
+- mobile horizontal-overflow regression check;
+- custom domain `nepomka.ru` поддерживается без hardcoded production base path.
+
+## Build / CI / deploy
 
 - Node.js 24;
-- committed npm `package-lock.json` и воспроизводимые установки через `npm ci`;
+- committed `package-lock.json` и воспроизводимые установки через `npm ci`;
 - Astro check + production build;
 - Git blob hash-gate для утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
-- zero-dependency `scripts/verify-static-build.mjs` для проверки generated HTML и локальных ссылок/assets;
-- CI содержит negative regression-check: намеренно сломанная локальная ссылка обязана быть обнаружена verifier-ом;
-- Playwright desktop/mobile checks и visual artifacts;
-- проверка GitHub Project Pages и custom-domain build modes;
-- GitHub Pages deployment запускается после успешного CI в `main`;
-- deployment повторно проверяет generated static build перед upload;
-- после публикации выполняется HTTP smoke-check реальной главной страницы;
-- отдельный production smoke проверяет неизвестный URL: ожидаются HTTP 404 и наша страница «Страница не найдена».
+- zero-dependency `scripts/verify-static-build.mjs` для generated HTML, локальных ссылок/assets, canonical и обязательных artifacts;
+- negative regression-check verifier-а;
+- Playwright desktop/mobile checks;
+- ephemeral `publish: true` case-route smoke;
+- проверки GitHub Project Pages и custom-domain build modes;
+- CI запускается для PR в `main`, push в `main` и вручную; superseded runs одной ветки отменяются через `concurrency`;
+- visual screenshots сохраняются для PR, Playwright report — при ошибке;
+- GitHub Pages deploy не имеет отдельного manual bypass и запускается только после успешного `CI` в `main`;
+- deployment повторно проверяет static build и выполняет HTTP smoke главной страницы и реального 404;
+- Dependabot еженедельно проверяет npm dependencies и GitHub Actions.
 
-## Quality gates
+## Repository hygiene
 
-Каждый commit и PR проходят один и тот же CI-контур:
+В кодовой части принята схема `branch → PR → CI → squash merge → main`. Для её реального принудительного соблюдения GitHub repository settings должны содержать ruleset для `main` с обязательным PR и required status check `quality`, запретом force-push/delete и linear history.
 
-- `npm ci`;
-- Astro check;
-- production build;
-- exact approved asset hashes;
-- static build verifier;
-- negative verifier regression;
-- Playwright desktop/mobile;
-- ephemeral `publish:true` case-route smoke;
-- custom-domain build + verifier;
-- visual screenshot artifacts.
+Также рекомендуется включить automatic deletion of merged head branches. Эти настройки находятся на уровне GitHub и не задаются файлами репозитория.
 
-Финальный production status необходимо сверять с GitHub Actions, а не считать этот документ заменой live-проверке.
+## Что остаётся сделать
 
-## Публикация
+- добавить первые реальные документированные кейсы и, при наличии разрешения, отзывы/рабочие фотографии;
+- подключить privacy-friendly analytics при появлении потребности в измерении воронки;
+- проверить Google Search Console и Яндекс Вебмастер;
+- включить и проверить ruleset для `main`;
+- удалить уже слитые и временные исторические ветки после проверки их refs;
+- включить автоматическое удаление head branches после merge.
 
-Текущий production target до покупки домена:
-
-`https://true-ruslan.github.io/nezabudka-spa/`
-
-Custom domain поддерживается конфигурацией deployment без изменения application code. См. `docs/CUSTOM_DOMAIN.md`.
-
-## Контентный workflow
-
-- контакты и основные публичные данные: `src/data/site.ts`;
-- брендовые production assets: `public/branding/`;
-- кейсы: `src/content/cases/`;
-- правила фактчекинга, публикации кейсов и визуалов: `docs/CONTENT_GUIDE.md`.
-
-## Осознанно отложено
-
-- подтверждённые контактные данные;
-- реальные опубликованные кейсы;
-- при необходимости — реальные редакционные фотографии для About/кейсов;
-- финальный купленный домен.
-
-Эти пункты являются контентными входными данными, а не блокерами архитектуры или публикации сайта.
+Финальный production status всегда сверяется по актуальному `main`, GitHub Actions и опубликованному сайту, а не только по этому документу.
