@@ -1,4 +1,5 @@
 ---
+import ArrowIcon from './ArrowIcon.astro';
 import { contact } from '../data/site';
 ---
 <section class="section" id="about" aria-labelledby="about-title">
@@ -7,7 +8,7 @@ import { contact } from '../data/site';
     <div class="about-grid__body">
       <p>Мой опыт связан с детейлингом, приёмкой автомобилей, запчастями и работой с частными клиентами. Мне важно понимать не только отдельную деталь, но и задачу владельца.</p>
       <p>Сначала собираю информацию, затем обсуждаю варианты. Объясняю обычным языком, что известно, а что ещё предстоит проверить.</p>
-      <a class="text-link" href={contact.instagram} target="_blank" rel="noopener noreferrer">Мой Instagram <span aria-hidden="true">↗</span></a>
+      <a class="text-link" href={contact.instagram} target="_blank" rel="noopener noreferrer">Мой Instagram <ArrowIcon direction="up-right" /></a>
     </div>
   </div>
 </section>

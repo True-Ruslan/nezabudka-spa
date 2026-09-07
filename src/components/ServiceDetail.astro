@@ -1,4 +1,5 @@
 ---
+import ArrowIcon from './ArrowIcon.astro';
 import type { ServicePageConfig } from '../data/service-pages';
 import { offers } from '../data/site';
 
@@ -16,13 +17,13 @@ const base = import.meta.env.BASE_URL;
 <article class="service-detail">
   <section class="service-hero">
     <div class="shell">
-      <a class="service-back" href={`${base}#expertise`}>← Все услуги</a>
+      <a class="service-back" href={`${base}#expertise`}><ArrowIcon direction="left" /> <span>Все услуги</span></a>
       <div class="service-hero__grid">
         <div class="service-hero__copy">
           <p class="eyeline">{offer.mode} · {offer.price}</p>
           <h1>{offer.title}</h1>
           <p class="service-lead">{config.lead}</p>
-          <a class="button" href="#contact">Обсудить услугу <span aria-hidden="true">↗</span></a>
+          <a class="button" href="#contact">Обсудить услугу <ArrowIcon direction="up-right" /></a>
         </div>
         <aside class="service-summary" aria-label="Условия услуги">
           <span>СТАРТОВАЯ СТОИМОСТЬ</span>
@@ -104,6 +105,8 @@ const base = import.meta.env.BASE_URL;
 
   .service-back {
     display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-bottom: clamp(54px, 7vw, 92px);
     color: var(--steel);
     font-family: var(--font-mono);

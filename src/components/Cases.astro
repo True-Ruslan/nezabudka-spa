@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import ArrowIcon from './ArrowIcon.astro';
 import SectionHeading from './SectionHeading.astro';
 
 const publishedCases = await getCollection('cases', ({ data }) => data.publish);
@@ -25,7 +26,7 @@ const base = import.meta.env.BASE_URL;
               <p class="case-row__vehicle">{entry.data.vehicle} / {entry.data.context}</p>
               <h3>{entry.data.title}</h3>
               <p>{entry.data.summary}</p>
-              <span class="case-row__more">Открыть разбор →</span>
+              <span class="case-row__more">Открыть разбор <ArrowIcon direction="right" /></span>
             </div>
           </a>
         </article>
@@ -53,19 +54,20 @@ const base = import.meta.env.BASE_URL;
   }
 
   .case-row__more {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin-top: 20px;
     color: #aab3ba;
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    transition: color 160ms var(--ease), transform 160ms var(--ease);
+    transition: color 160ms var(--ease);
   }
 
   .case-row__link:hover .case-row__more {
     color: var(--white);
-    transform: translateX(4px);
   }
 
   @media (max-width: 720px) {
