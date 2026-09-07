@@ -8,7 +8,7 @@ Nepomka работает как статический коммерческий 
 
 ## Product / UX
 
-- Astro 6 + TypeScript, полностью статическая сборка;
+- Astro 7 + TypeScript, полностью статическая сборка;
 - фирменная идентичность Nepomka и утверждённые brand assets;
 - адаптивный desktop/mobile интерфейс без клиентского UI-фреймворка;
 - коммерческий первый экран и шесть предложений: разбор сметы, сравнение запчастей, проверка авто перед покупкой, подбор автомобиля, бронеплёнка и тонировка;
@@ -43,6 +43,7 @@ Nepomka работает как статический коммерческий 
 
 - Node.js 24;
 - committed `package-lock.json` и воспроизводимые установки через `npm ci`;
+- security baseline: Astro 7.3.1, `sharp` 0.35.4 и `esbuild` 0.28.2 в текущем lockfile;
 - Astro check + production build;
 - Git blob hash-gate для утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
 - zero-dependency `scripts/verify-static-build.mjs` для generated HTML, локальных ссылок/assets, canonical и обязательных artifacts;
@@ -54,7 +55,7 @@ Nepomka работает как статический коммерческий 
 - visual screenshots сохраняются для PR, Playwright report — при ошибке;
 - GitHub Pages deploy не имеет отдельного manual bypass и запускается только после успешного `CI` в `main`;
 - deployment повторно проверяет static build и выполняет HTTP smoke главной страницы и реального 404;
-- Dependabot еженедельно проверяет npm dependencies и GitHub Actions.
+- Dependabot еженедельно проверяет npm dependencies и GitHub Actions; routine npm updates ограничены minor/patch, а security updates разрешены независимо от SemVer major и группируются отдельно.
 
 ## Repository hygiene
 
