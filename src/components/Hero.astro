@@ -1,4 +1,5 @@
 ---
+import ArrowIcon from './ArrowIcon.astro';
 import { brand } from '../data/site';
 const base = import.meta.env.BASE_URL;
 ---
@@ -11,7 +12,7 @@ const base = import.meta.env.BASE_URL;
       <p class="hero__lead">Проверка и подбор автомобилей с пробегом, бронеплёнка, тонировка, запчасти и независимый взгляд на ремонт.</p>
       <p class="hero__location">Белгород · онлайн и очно · ближайшая география по договорённости</p>
       <div class="hero__actions">
-        <a class="button" href={`${base}#contact`}>Обсудить мою ситуацию <span aria-hidden="true">↗</span></a>
+        <a class="button" href={`${base}#contact`}>Обсудить мою ситуацию <ArrowIcon direction="up-right" /></a>
         <a class="hero__secondary" href={`${base}#expertise`}>С чем могу помочь</a>
       </div>
       <p class="hero__caption">Напишите марку, модель и задачу — рассчитаю стоимость до начала работы.</p>
