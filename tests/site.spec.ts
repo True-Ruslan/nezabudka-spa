@@ -53,7 +53,7 @@ test('uses a high-resolution portrait-shaped hero asset without aggressive later
     'href',
     '/nezabudka-spa/branding/nepomka-apple-touch-icon.png',
   );
-  await expect(page).toHaveTitle(/Данил Непомнящий.*Nepomka/);
+  await expect(page).toHaveTitle('Nepomka — автомобильный специалист в Белгороде');
 });
 
 test('keeps navigation usable and base-path safe', async ({ page, isMobile }) => {
@@ -119,7 +119,7 @@ test('publishes canonical metadata for the GitHub Pages project path', async ({ 
   );
   await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', '/nezabudka-spa/site.webmanifest');
 
-  const jsonLd = await page.locator('script[type="application/ld+json"]').textContent();
+  const jsonLd = await page.locator('script[type="application/ld+json"]').first().textContent();
   const person = JSON.parse(jsonLd ?? '{}');
   const fixedOffer = person.makesOffer.find((offer: { itemOffered: { name: string } }) =>
     offer.itemOffered.name === 'Разобраться в рекомендациях сервиса');

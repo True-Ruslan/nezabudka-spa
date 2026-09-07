@@ -16,9 +16,29 @@ const base = import.meta.env.BASE_URL;
         <h3>{offer.title}</h3>
         <p>{offer.description}</p>
         <p class="offer__prepare">{offer.prepare}</p>
-        <a class="text-link" href={`${base}#contact`}>{offer.action} <span aria-hidden="true">↗</span></a>
+        <div class="offer__actions">
+          <a class="text-link" href={`${base}#contact`}>{offer.action} <span aria-hidden="true">↗</span></a>
+          {offer.pagePath && (
+            <a class="text-link offer__details" href={`${base}${offer.pagePath}`}>
+              Подробнее об услуге <span aria-hidden="true">→</span>
+            </a>
+          )}
+        </div>
       </article>)}
     </div>
     <p class="section-note">Фиксированная цена действует только для описанного объёма. Для осмотра, подбора, плёнки и тонировки указана стартовая стоимость; точный расчёт согласуем до начала работы.</p>
   </div>
 </section>
+
+<style>
+  .offer__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 22px;
+    align-items: center;
+  }
+
+  .offer__details {
+    color: var(--steel);
+  }
+</style>
