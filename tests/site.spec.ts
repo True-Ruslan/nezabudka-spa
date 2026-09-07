@@ -72,7 +72,7 @@ test('keeps navigation usable and base-path safe', async ({ page, isMobile }) =>
   await expect(contactLinks.first()).toBeVisible();
 });
 
-test('offers the supplied contact channels and an accessible FAQ', async ({ page }) => {
+test('offers the supplied contact channels and opens social links safely', async ({ page }) => {
   await page.goto('./#contact');
   const contact = page.locator('#contact');
   const vkLink = contact.getByRole('link', { name: /Написать в VK/ });
@@ -85,6 +85,11 @@ test('offers the supplied contact channels and an accessible FAQ', async ({ page
   await expect(instagramLink).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
   await expect(instagramLink).toHaveAttribute('target', '_blank');
   await expect(instagramLink).toHaveAttribute('rel', 'noopener noreferrer');
+
+  const aboutInstagramLink = page.getByRole('link', { name: /Мой Instagram/ });
+  await expect(aboutInstagramLink).toHaveAttribute('href', 'https://www.instagram.com/nepomka.d');
+  await expect(aboutInstagramLink).toHaveAttribute('target', '_blank');
+  await expect(aboutInstagramLink).toHaveAttribute('rel', 'noopener noreferrer');
 
   const mobileVkLink = page.getByRole('link', { name: /Написать Данилу в VK/ });
   await expect(mobileVkLink).toHaveAttribute('target', '_blank');
