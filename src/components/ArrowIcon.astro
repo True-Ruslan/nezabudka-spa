@@ -1,0 +1,50 @@
+---
+type Direction = 'up-right' | 'right' | 'left';
+
+interface Props {
+  direction: Direction;
+  class?: string;
+}
+
+const { direction, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['arrow-icon', `arrow-icon--${direction}`, className]}
+  data-arrow-icon={direction}
+  width="16"
+  height="16"
+  viewBox="0 0 16 16"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    direction === 'up-right' ? (
+      <path
+        d="M5 11L11 5M6 5H11V10"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    ) : direction === 'right' ? (
+      <path
+        d="M3 8H13M9.5 4.5L13 8L9.5 11.5"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    ) : (
+      <path
+        d="M13 8H3M6.5 4.5L3 8L6.5 11.5"
+        stroke="currentColor"
+        stroke-width="1.6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    )
+  }
+</svg>
