@@ -90,7 +90,14 @@ jobs:
             exit 1
           fi
 
-          missing_url="${PAGE_URL%/}/__nepomka-v012-404-smoke__"
+          service_url="${PAGE_URL%/}/avtopodbor/"
+          curl --fail --location --silent --show-error \
+            --retry 6 --retry-delay 3 --retry-all-errors \
+            "$service_url" -o /tmp/nepomka-avtopodbor.html
+          grep -q 'Подобрать автомобиль с пробегом' /tmp/nepomka-avtopodbor.html
+          grep -q 'Автоподбор в Белгороде' /tmp/nepomka-avtopodbor.html
+
+          missing_url="${PAGE_URL%/}/__nepomka-v020-404-smoke__"
           status=$(curl --location --silent --show-error \
             --retry 3 --retry-delay 2 --retry-all-errors \
             --output /tmp/nepomka-404.html \

@@ -9,6 +9,12 @@ const hasExplicitBasePath = Object.prototype.hasOwnProperty.call(process.env, 'B
 const siteOrigin = (process.env.SITE_ORIGIN?.trim() || defaultOrigin).replace(/\/+$/, '');
 const basePath = normalizeBasePath(hasExplicitBasePath ? process.env.BASE_PATH ?? '' : defaultBasePath);
 const expectedHomeCanonical = `${siteOrigin}${basePath === '/' ? '/' : `${basePath}/`}`;
+const serviceRoutes = [
+  'avtopodbor/',
+  'proverka-avto/',
+  'bronirovanie-plenkoy/',
+  'tonirovka/',
+];
 const ignoredScheme = /^(?:https?:|mailto:|tel:|data:|javascript:)/i;
 const attributePattern = /\b(?:href|src)=(?:"([^"]*)"|'([^']*)')/gi;
 const linkTagPattern = /<link\b[^>]*>/gi;
@@ -114,7 +120,11 @@ function extractLocalReferences(html) {
   return refs;
 }
 
-const requiredFiles = ['index.html', '404.html'];
+const requiredFiles = [
+  'index.html',
+  '404.html',
+  ...serviceRoutes.map((route) => `${route}index.html`),
+];
 for (const requiredFile of requiredFiles) {
   if (!(await exists(path.join(distRoot, requiredFile)))) {
     errors.push(`Missing required generated file: dist/${requiredFile}`);
@@ -153,6 +163,18 @@ if (await exists(path.join(distRoot, 'index.html'))) {
   const canonicalHref = extractCanonicalHref(homeHtml);
   if (canonicalHref !== expectedHomeCanonical) {
     errors.push(`Homepage canonical is not ${expectedHomeCanonical}`);
+  }
+}
+
+for (const route of serviceRoutes) {
+  const generatedFile = path.join(distRoot, route, 'index.html');
+  if (!(await exists(generatedFile))) continue;
+
+  const html = await readFile(generatedFile, 'utf8');
+  const expectedCanonical = new URL(route, expectedHomeCanonical).href;
+  const canonicalHref = extractCanonicalHref(html);
+  if (canonicalHref !== expectedCanonical) {
+    errors.push(`${route} canonical is not ${expectedCanonical}`);
   }
 }
 

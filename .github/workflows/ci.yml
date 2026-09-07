@@ -101,6 +101,12 @@ jobs:
           test -f dist/404.html
           test ! -e dist/cases/case-template/index.html
 
+          for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
+            test -f "dist/$route/index.html"
+            grep -q "https://true-ruslan.github.io/nezabudka-spa/$route/" "dist/$route/index.html"
+            grep -R -q --include='sitemap*.xml' "https://true-ruslan.github.io/nezabudka-spa/$route/" dist
+          done
+
       - name: Browser tests
         run: npm run test:e2e
 
@@ -142,11 +148,18 @@ jobs:
           npm run build
           npm run verify:build
           grep -q 'https://danil.example.test/' dist/index.html
-          if grep -q 'true-ruslan.github.io/nezabudka-spa' dist/index.html; then
+
+          for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
+            test -f "dist/$route/index.html"
+            grep -q "https://danil.example.test/$route/" "dist/$route/index.html"
+            grep -R -q --include='sitemap*.xml' "https://danil.example.test/$route/" dist
+          done
+
+          if grep -R -q 'true-ruslan.github.io/nezabudka-spa' dist/index.html dist/avtopodbor/index.html dist/proverka-avto/index.html dist/bronirovanie-plenkoy/index.html dist/tonirovka/index.html; then
             echo 'Project Pages URL leaked into custom-domain build.' >&2
             exit 1
           fi
-          if grep -q '/nezabudka-spa/' dist/index.html; then
+          if grep -R -q '/nezabudka-spa/' dist/index.html dist/avtopodbor/index.html dist/proverka-avto/index.html dist/bronirovanie-plenkoy/index.html dist/tonirovka/index.html; then
             echo 'Project base path leaked into custom-domain build.' >&2
             exit 1
           fi

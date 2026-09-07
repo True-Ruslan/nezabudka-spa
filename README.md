@@ -1,47 +1,59 @@
 # Nepomka
 
-Персональный сайт автомобильного специалиста **Непомнящего Данила Александровича**.
+Статический коммерческий сайт автомобильного специалиста **Непомнящего Данила Александровича**.
 
-## Что внутри
+Текущий release marker: **0.2.0**. Production: `https://nepomka.ru/`.
 
-- Astro 7 + TypeScript;
-- полностью статическая production-сборка;
+## Публичная структура
+
+Главная страница остаётся обзорной: шесть коммерческих предложений, процесс работы, FAQ, About и Contact. Для четырёх ключевых услуг опубликованы отдельные статические страницы:
+
+- `/avtopodbor/` — подбор автомобиля с пробегом;
+- `/proverka-avto/` — проверка автомобиля перед покупкой;
+- `/bronirovanie-plenkoy/` — защита кузова бронеплёнкой;
+- `/tonirovka/` — тонировка автомобиля.
+
+Разбор рекомендаций сервиса и сравнение запчастей остаются предложениями главной без отдельных thin SEO pages.
+
+## Технологии и качество
+
+- Astro 7 + TypeScript, полностью статическая сборка;
 - адаптивный интерфейс без клиентского UI-фреймворка;
-- фирменная идентичность Nepomka: утверждённый wordmark, компактный знак и browser icons;
-- утверждённый hero-портрет на основе предоставленных владельцем референсных фотографий;
-- SEO metadata, Open Graph, JSON-LD, sitemap, robots.txt и web manifest;
+- SEO metadata, canonical, Open Graph, Twitter Card, sitemap, robots.txt и web manifest;
+- Person/Offer JSON-LD на главной и отдельный Service JSON-LD на страницах услуг;
 - типизированная content collection для проверенных автомобильных кейсов;
-- отдельные статические страницы опубликованных кейсов `/cases/<id>/`;
-- собственная base-path-safe страница 404;
-- Playwright-проверки desktop/mobile, навигации, accessibility и горизонтального overflow;
-- hash-gate для ключевых утверждённых brand assets;
-- zero-dependency проверка целостности generated static site;
-- автоматический деплой на GitHub Pages после успешного CI в `main`;
-- post-deploy HTTP smoke-check главной страницы и реального 404.
+- `/cases/<id>/` создаётся только для `publish: true`;
+- base-path-safe custom `404.html`;
+- Playwright desktop/mobile regression tests;
+- zero-dependency `scripts/verify-static-build.mjs` для generated output;
+- проверки Project Pages fallback и root custom-domain build;
+- CI/CD через GitHub Actions и GitHub Pages.
+
+## Источники контента
+
+`src/data/site.ts` — бренд, контакты, шесть offer-карточек, цены, режимы и основные общие тексты.
+
+`src/data/service-pages.ts` — только page-specific SEO/content для четырёх detail pages. Цена, режим и краткое offer-описание там не дублируются.
+
+`src/content/cases/` — реальные кейсы. Новый материал готовится с `publish: false`; `case-template.md` всегда остаётся непубличным.
+
+Подробные правила: [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md).
 
 ## Brand assets
 
-Production-ассеты находятся в `public/branding/`:
+Production assets находятся в `public/branding/`:
 
-- `nepomka-logo.webp` — основной горизонтальный логотип;
-- `nepomka-favicon.png` — компактный знак для вкладки браузера и малых состояний;
-- `nepomka-apple-touch-icon.png` — touch icon;
-- `danil-hero.webp` — утверждённый hero-визуал.
+- `nepomka-logo.webp`;
+- `nepomka-favicon.png`;
+- `nepomka-apple-touch-icon.png`;
+- `danil-hero.webp`;
+- `og-cover.png`.
 
-CI фиксирует Git blob SHA основного логотипа и hero-визуала. Случайная замена валидным, но неутверждённым изображением должна ломать quality gate.
+CI фиксирует Git blob SHA утверждённых `nepomka-logo.webp` и `danil-hero.webp`, чтобы случайная замена production asset ломала quality gate.
 
-## Локальный запуск
+## Локальная проверка
 
 Требуется Node.js 24+.
-
-Установка зависимостей воспроизводима через committed `package-lock.json`:
-
-```bash
-npm ci
-npm run dev
-```
-
-Полный набор проверок:
 
 ```bash
 npm ci --no-audit --no-fund
@@ -52,26 +64,16 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-`npm run verify:build` проверяет generated HTML и локальные `href`/`src`, наличие custom `404.html`, canonical URL и отсутствие опубликованного route для редакционного `case-template`.
+`verify:build` проверяет обязательные generated pages, локальные `href`/`src`, canonical главной и service pages, custom 404 и отсутствие публичного `case-template`.
 
-## Production
+## Production и delivery
 
-Основной production URL:
+GitHub Pages custom domain настроен на `nepomka.ru`. `.github/workflows/deploy.yml` не имеет manual production bypass: deployment стартует только после успешного `CI` в `main`, повторно строит и проверяет artifact, публикует его и выполняет HTTP smoke главной, `/avtopodbor/` и реального 404.
 
-`https://nepomka.ru/`
+Build не hardcode-ит production base path: `actions/configure-pages` передаёт фактические `origin` и `base_path`, поэтому тот же код проверяется и для Project Pages fallback `/nezabudka-spa/`, и для root custom domain.
 
-GitHub Pages custom domain настроен на `nepomka.ru`. Workflow `.github/workflows/deploy.yml` запускается только после успешного `CI` в `main`, получает фактические `origin` и `base_path` из GitHub Pages и собирает Astro под них. Для custom domain сайт собирается в корне домена без `/nezabudka-spa/`.
+Инструкция: [`docs/CUSTOM_DOMAIN.md`](docs/CUSTOM_DOMAIN.md).
 
-После deployment workflow проверяет опубликованную главную страницу по HTTP и делает отдельный запрос к несуществующему URL: GitHub Pages должен вернуть HTTP 404 с нашей страницей «Страница не найдена».
+## Repository policy
 
-Инструкция по домену: [`docs/CUSTOM_DOMAIN.md`](docs/CUSTOM_DOMAIN.md).
-
-## Контент
-
-Контакты, опыт и основные публичные тексты находятся в `src/data/site.ts`. Неизвестные контактные каналы остаются `null` и не заменяются временными или вымышленными данными.
-
-Реальные кейсы добавляются в `src/content/cases/`. Новый кейс готовится с `publish: false`; после фактчекинга и разрешения на публикацию `publish: true` автоматически включает карточку на главной и отдельный статический route `/cases/<id>/`.
-
-Редакционный `src/content/cases/case-template.md` всегда остаётся непубличным.
-
-Полные правила подготовки контактов, кейсов и визуальных материалов: [`docs/CONTENT_GUIDE.md`](docs/CONTENT_GUIDE.md).
+`main` защищён active repository ruleset: PR обязателен, required status check — `quality`, включены linear history, запрет deletion/non-fast-forward и CodeQL policy для high-or-higher alerts. Repository merge policy — squash-only; auto-merge, update branch и automatic deletion of merged head branches включены.

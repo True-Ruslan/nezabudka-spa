@@ -4,72 +4,96 @@
 
 ## Статус
 
-Nepomka работает как статический коммерческий сайт автомобильного специалиста **Непомнящего Данила Александровича**. Production URL — `https://nepomka.ru/`. Источником истины для production остаётся `main`; публикация выполняется GitHub Pages только после успешного CI для соответствующей ревизии.
+Nepomka — статический коммерческий сайт автомобильного специалиста **Непомнящего Данила Александровича**. Production URL: `https://nepomka.ru/`. Project/release marker в текущем source tree — `0.2.0`.
 
-## Product / UX
+Источником истины для production остаётся `main`. GitHub Pages deployment запускается только после успешного CI соответствующей main-ревизии.
 
-- Astro 7 + TypeScript, полностью статическая сборка;
-- фирменная идентичность Nepomka и утверждённые brand assets;
-- адаптивный desktop/mobile интерфейс без клиентского UI-фреймворка;
-- коммерческий первый экран и шесть предложений: разбор сметы, сравнение запчастей, проверка авто перед покупкой, подбор автомобиля, бронеплёнка и тонировка;
-- опубликованы стартовые цены и ограничения формата услуги;
-- основной город — Белгород, часть услуг доступна онлайн;
-- отдельные секции процесса работы, FAQ, About и Contact;
-- типизированная content collection для автомобильных кейсов;
-- `publish: true` автоматически создаёт карточку и route `/cases/<id>/`;
-- при отсутствии опубликованных кейсов пустая секция не показывается;
-- собственная base-path-safe страница `404.html`.
+## v0.2 product / SEO
 
-## Контакты и публичные данные
+Главная позиционирует Nepomka как общий сайт автомобильного специалиста и использует title:
 
-Текущие production-данные находятся в `src/data/site.ts`:
+`Nepomka — автомобильный специалист в Белгороде`
 
-- телефон опубликован;
-- VK опубликован;
-- Instagram опубликован;
-- Telegram и email пока не заданы и остаются `null`.
+На главной сохраняются все шесть предложений. Для четырёх ключевых направлений существуют явные статические routes:
 
-Неизвестные контакты, кейсы, отзывы, сертификаты и метрики не должны заполняться временными или вымышленными значениями.
+- `/avtopodbor/`;
+- `/proverka-avto/`;
+- `/bronirovanie-plenkoy/`;
+- `/tonirovka/`.
+
+Карточки этих услуг сохраняют прямой contact CTA и дополнительно ведут на detail page. Разбор сметы и сравнение запчастей остаются на главной без искусственно тонких страниц.
+
+Page-specific SEO/content хранится в `src/data/service-pages.ts`; цены, режимы и краткие offer-условия остаются единственным источником истины в `src/data/site.ts`.
+
+## Контакты и фактические данные
+
+В `src/data/site.ts` подтверждены и опубликованы:
+
+- телефон;
+- VK;
+- Instagram.
+
+Telegram и email остаются `null` до появления подтверждённых данных и разрешения на публикацию.
+
+Вымышленные кейсы, отзывы, сертификаты, гарантии результата и метрики не публикуются.
 
 ## Accessibility / SEO
 
-- semantic landmarks, skip link, focus states и reduced motion;
-- canonical, description, Open Graph, Twitter Card, JSON-LD Person/Offer, sitemap, robots.txt и web manifest;
-- отдельный OG cover;
-- mobile horizontal-overflow regression check;
-- custom domain `nepomka.ru` поддерживается без hardcoded production base path.
+- semantic landmarks, skip link, visible focus и reduced motion;
+- уникальные title/description/canonical для четырёх service pages;
+- Person/Offer JSON-LD на главной;
+- отдельный Service JSON-LD на detail pages без ложной фиксированной цены для услуг «от»;
+- Open Graph, Twitter Card, sitemap, robots.txt и web manifest;
+- mobile horizontal-overflow regression checks;
+- base-path safety для Project Pages fallback и root custom domain.
 
 ## Build / CI / deploy
 
 - Node.js 24;
-- committed `package-lock.json` и воспроизводимые установки через `npm ci`;
-- security baseline: Astro 7.3.1, `sharp` 0.35.4 и `esbuild` 0.28.2 в текущем lockfile;
-- Astro check + production build;
-- Git blob hash-gate для утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
-- zero-dependency `scripts/verify-static-build.mjs` для generated HTML, локальных ссылок/assets, canonical и обязательных artifacts;
-- negative regression-check verifier-а;
-- Playwright desktop/mobile checks;
+- committed `package-lock.json`, установки через `npm ci`;
+- Astro check + static production build;
+- hash-gate утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
+- `scripts/verify-static-build.mjs` проверяет generated HTML, локальные references, обязательные service outputs и canonical;
+- negative tests доказывают отказ verifier-а на broken reference и canonical drift;
+- Playwright desktop/mobile suite;
 - ephemeral `publish: true` case-route smoke;
-- проверки GitHub Project Pages и custom-domain build modes;
-- CI запускается для PR в `main`, push в `main` и вручную; superseded runs одной ветки отменяются через `concurrency`;
-- visual screenshots сохраняются для PR, Playwright report — при ошибке;
-- GitHub Pages deploy не имеет отдельного manual bypass и запускается только после успешного `CI` в `main`;
-- deployment повторно проверяет static build и выполняет HTTP smoke главной страницы и реального 404;
-- Dependabot еженедельно проверяет npm dependencies и GitHub Actions; routine npm updates ограничены minor/patch, а security updates разрешены независимо от SemVer major и группируются отдельно.
+- отдельные Project Pages и custom-domain assertions, включая sitemap/service canonical;
+- CI запускается для PR в `main`, push в `main` и вручную; superseded runs отменяются через `concurrency`;
+- deploy запускается только по successful `workflow_run` CI для `main`;
+- production smoke проверяет главную, `/avtopodbor/` и реальный custom 404.
 
-## Repository hygiene
+## Repository governance — фактическое состояние
 
-В кодовой части принята схема `branch → PR → CI → squash merge → main`. Для её реального принудительного соблюдения GitHub repository settings должны содержать ruleset для `main` с обязательным PR и required status check `quality`, запретом force-push/delete и linear history.
+Активен ruleset **Main branch protection** для default branch:
 
-Также рекомендуется включить automatic deletion of merged head branches. Эти настройки находятся на уровне GitHub и не задаются файлами репозитория.
+- branch deletion запрещён;
+- non-fast-forward / force-push запрещён;
+- required linear history;
+- merge только через pull request, required approvals: 0 для solo-repository;
+- required status check: `quality`, strict up-to-date policy выключена;
+- CodeQL: блокирующий policy для `high_or_higher`, alerts threshold `errors`;
+- bypass actors отсутствуют.
 
-## Что остаётся сделать
+Repository settings:
 
-- добавить первые реальные документированные кейсы и, при наличии разрешения, отзывы/рабочие фотографии;
-- подключить privacy-friendly analytics при появлении потребности в измерении воронки;
+- squash merge — включён;
+- merge commits и rebase merge — выключены;
+- auto-merge — включён;
+- update branch — включён;
+- automatic deletion of merged head branches — включено;
+- description: `Nepomka — сайт автомобильного специалиста Данила Непомнящего`;
+- homepage: `https://nepomka.ru`;
+- topics заполнены;
+- Wiki и Projects выключены.
+
+Перед v0.2 в repository остались только `main` и текущая feature-ветка; исторические stale branches удалены.
+
+## Следующие содержательные задачи
+
+- опубликовать первые реальные документированные кейсы;
+- при наличии разрешения добавить реальные отзывы/рабочие фотографии;
+- подключить privacy-friendly analytics только при появлении измерительной задачи;
 - проверить Google Search Console и Яндекс Вебмастер;
-- включить и проверить ruleset для `main`;
-- удалить уже слитые и временные исторические ветки после проверки их refs;
-- включить автоматическое удаление head branches после merge.
+- после release проверить индексирование sitemap/canonical/service pages.
 
 Финальный production status всегда сверяется по актуальному `main`, GitHub Actions и опубликованному сайту, а не только по этому документу.
