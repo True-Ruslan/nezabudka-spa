@@ -4,9 +4,12 @@ on:
   push:
     branches:
       - fix/security-dependency-upgrade
+    paths:
+      - package.json
+      - .github/workflows/security-lock-refresh.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   refresh:
@@ -15,8 +18,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-        with:
-          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v7
@@ -51,11 +52,14 @@ jobs:
       - name: Audit dependency tree
         run: npm audit --audit-level=low
 
-      - name: Upload refreshed lockfile
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v7
-        with:
-          name: security-lock-refresh
-          path: package-lock.json
-          if-no-files-found: error
-          retention-days: 1
+      - name: Commit refreshed lockfile
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package-lock.json
+          if git diff --cached --quiet; then
+            echo "package-lock.json is already current."
+            exit 0
+          fi
+          git commit -m "fix(security): refresh dependency lockfile"
+          git push
