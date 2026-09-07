@@ -1,97 +1,87 @@
 # Changelog
 
-## Unreleased — 2026-09-07
+## Unreleased
+
+## 0.2.0 — 2026-09-07
 
 ### Added
 
 - production domain `https://nepomka.ru/`;
 - подтверждённые телефон, VK и Instagram;
-- коммерческие предложения для частных клиентов: разбор сметы, сравнение запчастей, проверка и подбор автомобиля, бронеплёнка и тонировка;
-- стартовые цены, ограничения формата услуг, процесс работы и FAQ;
+- шесть коммерческих предложений, стартовые цены, процесс работы и FAQ;
+- четыре статические service pages: `/avtopodbor/`, `/proverka-avto/`, `/bronirovanie-plenkoy/`, `/tonirovka/`;
+- typed `src/data/service-pages.ts` и reusable `ServiceDetail.astro`;
+- уникальные service title/description/canonical и Service JSON-LD;
+- secondary homepage links на четыре detail pages без удаления прямого contact CTA;
 - отдельный Open Graph cover;
-- `.github/dependabot.yml` для еженедельных обновлений npm dependencies и GitHub Actions.
+- `.github/dependabot.yml` для npm dependencies и GitHub Actions;
+- active `Main branch protection` ruleset с required `quality`, CodeQL policy и linear history.
 
 ### Changed
 
-- главная страница переработана из имиджевого портфолио в коммерческий landing с прямым сценарием обращения;
-- пустая секция кейсов скрывается до появления реального `publish: true` материала;
-- VK и Instagram открываются в новой вкладке с `noopener noreferrer`, внутренние ссылки и `tel:` остаются в текущем контексте;
-- Astro обновлён с 6.x до 7.3.1; `@astrojs/sitemap` — до 3.7.4, `@astrojs/check` — до 0.9.10;
-- Dependabot policy ограничивает routine npm version updates уровнями minor/patch, но не блокирует security updates, требующие SemVer major; security updates группируются отдельно;
-- CI автоматически запускается только для pull request в `main` и push в `main`; ручной CI остаётся доступен для диагностики;
-- superseded CI runs одной ветки отменяются через `concurrency`;
+- homepage title расширен до `Nepomka — автомобильный специалист в Белгороде` вместо узкого автоподбор-позиционирования;
+- landing переработан в коммерческий сценарий обращения, при этом все шесть offer-карточек сохранены;
+- empty cases section скрывается до появления реального `publish: true` материала;
+- Astro обновлён до 7.3.1, `@astrojs/sitemap` до 3.7.4, `@astrojs/check` до 0.9.10;
+- project marker синхронизирован до `0.2.0` в `package.json` и `package-lock.json`;
+- VK/Instagram открываются с `target="_blank" rel="noopener noreferrer"`;
+- CI автоматически работает для PR/main и отменяет superseded runs;
 - checkout в CI/deploy не сохраняет write credentials;
-- visual screenshots сохраняются для PR, Playwright report — при ошибке, retention сокращён до 7 дней;
-- GitHub Pages deployment запускается только после успешного `CI` в `main`; отдельный `workflow_dispatch` production bypass удалён;
-- `PROJECT_STATE.md` и `ROADMAP.md` синхронизированы с текущим production и repository governance.
+- GitHub Pages deploy запускается только после successful main CI;
+- static verifier теперь требует четыре service outputs и проверяет их canonical;
+- Project Pages и custom-domain CI проверяют service routes и sitemap;
+- deployment smoke дополнительно проверяет `/avtopodbor/`;
+- repository merge policy нормализован до squash-only, включены auto-merge, update branch и automatic branch deletion;
+- repository description/homepage/topics заполнены, Wiki/Projects выключены.
 
-### Security
+### Security / integrity
 
-- regenerated `package-lock.json` resolves `sharp` 0.35.4 and `esbuild` 0.28.2, removing the dependency versions covered by the current Dependabot alerts;
-- static verifier больше не превращает hostname/canonical URL в динамическое регулярное выражение; canonical извлекается из generated `<link>` и сравнивается как строка;
-- CI отдельно доказывает, что verifier отклоняет намеренно неверный canonical URL;
-- full migration validation on Node.js 24 passed `astro check`, static build, static verifier and Playwright regression tests;
-- `npm audit --audit-level=low` reports 0 vulnerabilities for the refreshed dependency tree.
+- lockfile использует текущий security baseline dependency tree;
+- verifier сравнивает canonical как строку и имеет negative canonical-drift test;
+- CodeQL ruleset блокирует high-or-higher security findings;
+- утверждённые `danil-hero.webp` и `nepomka-logo.webp` защищены Git blob hash-gate;
+- никакие вымышленные отзывы, кейсы, метрики, сертификаты или гарантии в v0.2 не добавлены;
+- цены «от» не публикуются как ложная фиксированная `price` в Service structured data.
 
 ### Removed
 
-- неиспользуемый legacy `public/brand-mark.svg`;
-- неиспользуемый legacy `public/favicon.svg`.
-
-### Repository governance
-
-GitHub-level ruleset для `main`, automatic deletion of merged branches и нормализация merge settings остаются отдельными настройками репозитория и не могут быть выражены только файлами в Git tree.
+- unused legacy `public/brand-mark.svg`;
+- unused legacy `public/favicon.svg`;
+- исторические merged/temp branches после проверки refs.
 
 ## 0.1.1 — 2026-09-06
 
 ### Added
 
-- статические detail routes `/cases/<id>/` для кейсов с `publish: true`;
-- собственная base-path-safe страница 404;
-- закрытие мобильного меню по Escape с возвратом keyboard focus;
-- `scripts/verify-static-build.mjs` для проверки generated HTML, локальных ссылок/assets, canonical и обязательных static artifacts;
-- negative regression-check, подтверждающий, что static verifier отклоняет намеренно сломанную локальную ссылку;
-- post-deploy HTTP smoke-check опубликованной главной страницы;
-- production smoke реального неизвестного URL с ожиданием HTTP 404 и custom error page;
-- `docs/CONTENT_GUIDE.md` с правилами подготовки контактов, кейсов и фотографий.
+- статические detail routes `/cases/<id>/` для `publish: true`;
+- base-path-safe custom 404;
+- Escape/focus handling мобильного меню;
+- `scripts/verify-static-build.mjs` и negative broken-reference test;
+- post-deploy HTTP smoke главной и реального 404;
+- `docs/CONTENT_GUIDE.md`.
 
 ### Changed
 
-- добавлен committed `package-lock.json`;
-- CI и GitHub Pages deploy переведены на `npm ci`;
-- generated Pages artifact повторно проходит static verifier перед upload;
-- custom-domain build также проходит verifier;
-- README и project state обновлены под воспроизводимый v0.1.1 workflow.
-
-### Verified
-
-- Astro check: 0 errors, 0 warnings, 0 hints;
-- static verifier: pass на корректной сборке и ожидаемый fail на намеренно сломанной ссылке;
-- Playwright: 16 passed, 2 skipped, 0 failed на последней полной feature-веточной проверке перед release documentation;
-- GitHub Project Pages build mode: pass;
-- custom-domain root build mode: pass.
+- committed `package-lock.json`;
+- CI/deploy переведены на `npm ci`;
+- generated Pages artifact и custom-domain build проходят verifier.
 
 ### Safety / integrity
 
-- `case-template.md` остаётся `publish: false` и не получает публичный route;
-- новые возможности не добавляют вымышленные контакты, кейсы, отзывы, сертификаты или метрики;
-- production state считается окончательно подтверждённым только после merge, post-merge CI и успешного GitHub Pages smoke-check.
+- `case-template.md` остаётся `publish: false`;
+- production state подтверждается только main CI + Pages smoke.
 
 ## 0.1.0 — 2026-09-06
 
 ### Added
 
-- первая версия персонального сайта NEZABUDKA;
-- Astro 6 + TypeScript static architecture;
-- responsive desktop/mobile дизайн;
-- основные информационные секции и техническая hero-графика;
+- первая версия сайта;
+- Astro + TypeScript static architecture;
+- responsive design;
 - SEO, Open Graph, JSON-LD, sitemap, robots.txt и manifest;
 - content collection для будущих проверенных кейсов;
-- CI с Astro check, build, Playwright и visual artifacts;
-- GitHub Pages deploy pipeline;
-- автоматическая адаптация build base URL к текущим GitHub Pages settings, включая будущий custom domain.
+- CI и GitHub Pages deploy pipeline.
 
 ### Safety / integrity
 
-- исключены вымышленные отзывы, кейсы, цифры и контактные данные;
-- custom domain не завязан на `CNAME` для Actions-based Pages deployment.
+- исключены вымышленные отзывы, кейсы, цифры и контактные данные.
