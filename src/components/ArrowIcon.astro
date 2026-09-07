@@ -48,3 +48,67 @@ const { direction, class: className } = Astro.props;
     )
   }
 </svg>
+
+<style is:global>
+  .arrow-icon {
+    width: 15px;
+    height: 15px;
+    flex: 0 0 auto;
+    overflow: visible;
+    opacity: 0.92;
+    transition: transform 160ms var(--ease), opacity 160ms var(--ease);
+  }
+
+  .button:has(> .arrow-icon) {
+    gap: 12px;
+  }
+
+  .text-link:has(> .arrow-icon) {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  .contact-social:has(> .arrow-icon) {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  @media (hover: hover) {
+    .button:hover > .arrow-icon--up-right,
+    .text-link:hover > .arrow-icon--up-right,
+    .contact-social:hover > .arrow-icon--up-right,
+    .mobile-contact:hover > .arrow-icon--up-right {
+      opacity: 1;
+      transform: translate(2px, -2px);
+    }
+
+    .text-link:hover > .arrow-icon--right,
+    .case-row__link:hover .arrow-icon--right {
+      opacity: 1;
+      transform: translateX(3px);
+    }
+
+    .service-back:hover > .arrow-icon--left,
+    .case-page__back:hover > .arrow-icon--left {
+      opacity: 1;
+      transform: translateX(-3px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrow-icon {
+      transition: none;
+    }
+
+    .button:hover > .arrow-icon,
+    .text-link:hover > .arrow-icon,
+    .contact-social:hover > .arrow-icon,
+    .mobile-contact:hover > .arrow-icon,
+    .case-row__link:hover .arrow-icon,
+    .service-back:hover > .arrow-icon,
+    .case-page__back:hover > .arrow-icon {
+      transform: none;
+    }
+  }
+</style>
