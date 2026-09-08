@@ -5,7 +5,9 @@
 ### Changed
 
 - текстовые directional glyphs `↗`, `→` и `←` в пользовательских CTA/навигации заменены на единый набор декоративных inline SVG icons, чтобы desktop/mobile rendering не зависел от системного шрифта или emoji substitution;
-- primary, secondary и back-навигация получили согласованные направления и лёгкое hover-движение с поддержкой `prefers-reduced-motion`.
+- primary, secondary и back-навигация получили согласованные направления и лёгкое hover-движение с поддержкой `prefers-reduced-motion`;
+- основной messenger CTA переведён с VK на прямую Telegram-ссылку `https://t.me/+79045328772`, включая mobile sticky action и Person `sameAs`;
+- рядом с телефоном добавлен локально сохранённый официальный знак MAX как некликабельный индикатор доступности номера; неподтверждённая персональная MAX-ссылка не публикуется.
 
 ## 0.2.0 — 2026-09-07
 

@@ -47,7 +47,8 @@ Production assets находятся в `public/branding/`:
 - `nepomka-favicon.png`;
 - `nepomka-apple-touch-icon.png`;
 - `danil-hero.webp`;
-- `og-cover.png`.
+- `og-cover.png`;
+- `max-mark.svg` — официальный знак MAX, локально сохранённый для contact UI.
 
 CI фиксирует Git blob SHA утверждённых `nepomka-logo.webp` и `danil-hero.webp`, чтобы случайная замена production asset ломала quality gate.
 
