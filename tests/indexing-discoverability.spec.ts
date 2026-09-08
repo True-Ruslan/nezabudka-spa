@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
 const services = [
@@ -50,3 +51,21 @@ for (const current of services) {
     ]);
   });
 }
+
+test('captures representative service page visual baseline', async ({ page }, testInfo) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./avtopodbor/');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page.getByRole('navigation', { name: 'Хлебные крошки' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Другие услуги' })).toBeVisible();
+  expect(pageErrors).toEqual([]);
+
+  await mkdir('artifacts/screenshots', { recursive: true });
+  await page.screenshot({
+    path: `artifacts/screenshots/service-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+});
