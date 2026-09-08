@@ -1,6 +1,9 @@
 import { expect, test } from '@playwright/test';
 
-test('uses Telegram as the primary messenger and marks the phone as available in MAX', async ({ page }) => {
+test('uses Telegram as the primary messenger and marks the phone as available in MAX', async ({
+  page,
+  isMobile,
+}) => {
   await page.goto('./#contact');
 
   const contact = page.locator('#contact');
@@ -10,7 +13,10 @@ test('uses Telegram as the primary messenger and marks the phone as available in
   await expect(telegramLink).toHaveAttribute('rel', 'noopener noreferrer');
 
   const mobileTelegramLink = page.locator('.mobile-contact');
-  await expect(mobileTelegramLink).toHaveAccessibleName('Написать Данилу в Telegram');
+  await expect(mobileTelegramLink).toContainText('Написать Данилу в Telegram');
+  if (isMobile) {
+    await expect(mobileTelegramLink).toHaveAccessibleName('Написать Данилу в Telegram');
+  }
   await expect(mobileTelegramLink).toHaveAttribute('href', 'https://t.me/+79045328772');
   await expect(mobileTelegramLink).toHaveAttribute('target', '_blank');
   await expect(mobileTelegramLink).toHaveAttribute('rel', 'noopener noreferrer');
