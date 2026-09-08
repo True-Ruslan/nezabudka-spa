@@ -85,6 +85,12 @@ jobs:
           grep -q 'Автомобили без догадок' /tmp/nepomka-home.html
           grep -q 'Nepomka' /tmp/nepomka-home.html
           grep -q 'Непомнящий Данил Александрович' /tmp/nepomka-home.html
+          grep -q 'https://t.me/+79045328772' /tmp/nepomka-home.html
+          grep -q '/branding/max-mark.svg' /tmp/nepomka-home.html
+          if grep -q 'https://vk.ru/boypocek' /tmp/nepomka-home.html; then
+            echo 'Legacy VK contact is still present in production homepage.' >&2
+            exit 1
+          fi
           if grep -q 'NEZABUDKA' /tmp/nepomka-home.html; then
             echo 'Legacy NEZABUDKA branding is still present in production.' >&2
             exit 1
