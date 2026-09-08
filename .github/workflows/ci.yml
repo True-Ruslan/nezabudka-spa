@@ -17,7 +17,7 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -124,6 +124,7 @@ jobs:
           done
 
       - name: Browser tests
+        id: browser-tests
         run: npm run test:e2e
 
       - name: Prove published case route generation
@@ -184,8 +185,40 @@ jobs:
             exit 1
           fi
 
+      - name: Audit external links
+        env:
+          CHECK_LINK_ROOT: dist
+          CHECK_LINK_RETRIES: '2'
+          CHECK_LINK_TIMEOUT_MS: '10000'
+        run: npm run audit:links
+
+      - name: Accessibility audit with axe
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4322 > /tmp/nepomka-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
+
+          node --input-type=module <<'NODE'
+          const url = 'http://127.0.0.1:4322/';
+          for (let attempt = 0; attempt < 60; attempt += 1) {
+            try {
+              const response = await fetch(url);
+              if (response.ok) process.exit(0);
+            } catch {}
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          }
+          throw new Error(`Preview did not become ready: ${url}`);
+          NODE
+
+          axe_bin="$(npm exec --yes --package=@axe-core/cli@4.13.0 -- which axe)"
+          axe_source="$(dirname "$(dirname "$axe_bin")")/axe-core/axe.min.js"
+          test -f "$axe_source"
+          AXE_SOURCE_PATH="$axe_source" \
+            A11Y_BASE_URL=http://127.0.0.1:4322/ \
+            node scripts/run-axe-audit.mjs
+
       - name: Upload visual baselines
-        if: ${{ always() && github.event_name == 'pull_request' }}
+        if: ${{ always() && github.event_name == 'pull_request' && steps.browser-tests.outcome != 'skipped' }}
         uses: actions/upload-artifact@v7
         with:
           name: site-screenshots
