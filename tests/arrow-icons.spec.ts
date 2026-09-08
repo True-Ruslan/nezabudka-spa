@@ -25,7 +25,7 @@ test('uses SVG arrows instead of text glyphs across homepage actions', async ({ 
 
   const contact = page.locator('#contact');
   await expect(
-    contact.getByRole('link', { name: /Написать в VK/ }).locator('svg[data-arrow-icon="up-right"]'),
+    contact.getByRole('link', { name: /Написать в Telegram/ }).locator('svg[data-arrow-icon="up-right"]'),
   ).toHaveCount(1);
   await expect(
     contact.getByRole('link', { name: /Instagram/ }).locator('svg[data-arrow-icon="up-right"]'),

@@ -81,11 +81,11 @@ test('service contact keeps external social links isolated from the opener', asy
   await page.goto('./avtopodbor/#contact');
   const contact = page.locator('#contact');
 
-  await expect(contact.getByRole('link', { name: /Написать в VK/ })).toHaveAttribute(
+  await expect(contact.getByRole('link', { name: /Написать в Telegram/ })).toHaveAttribute(
     'target',
     '_blank',
   );
-  await expect(contact.getByRole('link', { name: /Написать в VK/ })).toHaveAttribute(
+  await expect(contact.getByRole('link', { name: /Написать в Telegram/ })).toHaveAttribute(
     'rel',
     'noopener noreferrer',
   );

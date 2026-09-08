@@ -2,10 +2,9 @@ export type NavigationItem = Readonly<{ label: string; href: string }>;
 export type ContentItem = Readonly<{ title: string; description: string }>;
 export type ExperienceItem = Readonly<{ title: string; description: string }>;
 export type ContactConfig = Readonly<{
-  telegram: string | null;
+  telegram: string;
   email: string | null;
   phone: string | null;
-  vk: string;
   instagram: string;
 }>;
 
@@ -98,10 +97,9 @@ export const principles = [
 ] as const;
 
 export const contact: ContactConfig = {
-  telegram: null,
+  telegram: 'https://t.me/+79045328772',
   email: null,
   phone: '+79045328772',
-  vk: 'https://vk.ru/boypocek',
   instagram: 'https://www.instagram.com/nepomka.d',
 };
 

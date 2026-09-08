@@ -75,10 +75,10 @@ test('keeps navigation usable and base-path safe', async ({ page, isMobile }) =>
 test('offers the supplied contact channels and opens social links safely', async ({ page }) => {
   await page.goto('./#contact');
   const contact = page.locator('#contact');
-  const vkLink = contact.getByRole('link', { name: /Написать в VK/ });
-  await expect(vkLink).toHaveAttribute('href', 'https://vk.ru/boypocek');
-  await expect(vkLink).toHaveAttribute('target', '_blank');
-  await expect(vkLink).toHaveAttribute('rel', 'noopener noreferrer');
+  const telegramLink = contact.getByRole('link', { name: /Написать в Telegram/ });
+  await expect(telegramLink).toHaveAttribute('href', 'https://t.me/+79045328772');
+  await expect(telegramLink).toHaveAttribute('target', '_blank');
+  await expect(telegramLink).toHaveAttribute('rel', 'noopener noreferrer');
   await expect(contact.locator('a[href^="tel:"]')).toHaveAttribute('href', 'tel:+79045328772');
 
   const instagramLink = contact.getByRole('link', { name: /Instagram/ });
@@ -91,10 +91,10 @@ test('offers the supplied contact channels and opens social links safely', async
   await expect(aboutInstagramLink).toHaveAttribute('target', '_blank');
   await expect(aboutInstagramLink).toHaveAttribute('rel', 'noopener noreferrer');
 
-  const mobileVkLink = page.locator('.mobile-contact');
-  await expect(mobileVkLink).toHaveAttribute('href', 'https://vk.ru/boypocek');
-  await expect(mobileVkLink).toHaveAttribute('target', '_blank');
-  await expect(mobileVkLink).toHaveAttribute('rel', 'noopener noreferrer');
+  const mobileTelegramLink = page.locator('.mobile-contact');
+  await expect(mobileTelegramLink).toHaveAttribute('href', 'https://t.me/+79045328772');
+  await expect(mobileTelegramLink).toHaveAttribute('target', '_blank');
+  await expect(mobileTelegramLink).toHaveAttribute('rel', 'noopener noreferrer');
 
   const question = page.locator('summary').filter({ hasText: 'Почему часть цен указана «от»?' });
   await question.click();
