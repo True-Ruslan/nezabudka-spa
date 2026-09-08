@@ -9,6 +9,7 @@ const hasExplicitBasePath = Object.prototype.hasOwnProperty.call(process.env, 'B
 const siteOrigin = (process.env.SITE_ORIGIN?.trim() || defaultOrigin).replace(/\/+$/, '');
 const basePath = normalizeBasePath(hasExplicitBasePath ? process.env.BASE_PATH ?? '' : defaultBasePath);
 const expectedHomeCanonical = `${siteOrigin}${basePath === '/' ? '/' : `${basePath}/`}`;
+const expectedSitemapUrl = new URL('sitemap-index.xml', expectedHomeCanonical).href;
 const serviceRoutes = [
   'avtopodbor/',
   'proverka-avto/',
@@ -123,11 +124,33 @@ function extractLocalReferences(html) {
 const requiredFiles = [
   'index.html',
   '404.html',
+  'robots.txt',
+  'sitemap-index.xml',
   ...serviceRoutes.map((route) => `${route}index.html`),
 ];
 for (const requiredFile of requiredFiles) {
   if (!(await exists(path.join(distRoot, requiredFile)))) {
     errors.push(`Missing required generated file: dist/${requiredFile}`);
+  }
+}
+
+const robotsPath = path.join(distRoot, 'robots.txt');
+if (await exists(robotsPath)) {
+  const robots = await readFile(robotsPath, 'utf8');
+  if (!robots.includes('User-agent: *')) errors.push('robots.txt is missing User-agent: *');
+  if (!robots.includes('Allow: /')) errors.push('robots.txt is missing Allow: /');
+  if (!robots.includes(`Sitemap: ${expectedSitemapUrl}`)) {
+    errors.push(`robots.txt sitemap is not ${expectedSitemapUrl}`);
+  }
+
+  const sitemapUrl = robots.match(/^Sitemap:\s*(\S+)$/m)?.[1] ?? null;
+  if (!sitemapUrl) {
+    errors.push('robots.txt does not publish a Sitemap URL');
+  } else {
+    const sitemapCandidate = toDistCandidate(sitemapUrl, 'index.html');
+    if (typeof sitemapCandidate === 'string' && !(await exists(path.join(distRoot, sitemapCandidate)))) {
+      errors.push(`robots.txt points to missing sitemap: dist/${sitemapCandidate}`);
+    }
   }
 }
 
