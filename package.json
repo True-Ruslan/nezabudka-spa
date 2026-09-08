@@ -13,7 +13,7 @@
     "verify:build": "node scripts/verify-static-build.mjs",
     "preview": "astro preview",
     "audit:links": "node scripts/check-external-links.mjs",
-    "test:quality": "node --test tests/external-links.test.mjs",
+    "test:quality": "node --test tests/external-links.test.mjs tests/lighthouse-config.test.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
