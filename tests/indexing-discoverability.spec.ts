@@ -29,5 +29,24 @@ for (const current of services) {
       );
     }
     await expect(related.getByRole('link', { name: new RegExp(current.title) })).toHaveCount(0);
+
+    const scripts = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const jsonLd = scripts.map((value) => JSON.parse(value));
+    const breadcrumbList = jsonLd.find((value) => value['@type'] === 'BreadcrumbList');
+
+    expect(breadcrumbList?.itemListElement).toEqual([
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Главная',
+        item: 'https://true-ruslan.github.io/nezabudka-spa/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: current.title,
+        item: `https://true-ruslan.github.io/nezabudka-spa/${current.route}`,
+      },
+    ]);
   });
 }
