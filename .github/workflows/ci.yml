@@ -110,6 +110,8 @@ jobs:
           test -f dist/404.html
           test -f dist/robots.txt
           grep -Fxq 'Sitemap: https://true-ruslan.github.io/nezabudka-spa/sitemap-index.xml' dist/robots.txt
+          grep -q '"@type":"BreadcrumbList"' dist/avtopodbor/index.html
+          grep -q 'href="/nezabudka-spa/proverka-avto/"' dist/avtopodbor/index.html
           test ! -e dist/cases/case-template/index.html
 
           for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
@@ -161,6 +163,8 @@ jobs:
           grep -q 'https://danil.example.test/' dist/index.html
           test -f dist/robots.txt
           grep -Fxq 'Sitemap: https://danil.example.test/sitemap-index.xml' dist/robots.txt
+          grep -q '"@type":"BreadcrumbList"' dist/avtopodbor/index.html
+          grep -q 'href="/proverka-avto/"' dist/avtopodbor/index.html
 
           for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
             test -f "dist/$route/index.html"
