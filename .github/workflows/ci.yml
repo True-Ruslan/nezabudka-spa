@@ -194,7 +194,7 @@ jobs:
 
       - name: Accessibility audit with axe
         run: |
-          npm run preview -- --host 127.0.0.1 --port 4322 > /tmp/nepomka-preview.log 2>&1 &
+          SITE_ORIGIN=http://127.0.0.1:4322 BASE_PATH='' npm run preview -- --host 127.0.0.1 --port 4322 > /tmp/nepomka-preview.log 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid" 2>/dev/null || true' EXIT
 
