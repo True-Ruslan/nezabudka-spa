@@ -6,11 +6,15 @@ type Offer = (typeof offers)[number];
 type Input = Readonly<{
   offer: Offer;
   config: ServicePageConfig;
-  site: URL;
+  site: URL | undefined;
   base: string;
 }>;
 
 export function buildServiceStructuredData({ offer, config, site, base }: Input) {
+  if (!site) {
+    throw new Error('Astro site URL is required to build service structured data');
+  }
+
   if (!offer.pagePath) {
     throw new Error(`Offer ${offer.id} does not have a service page path`);
   }
