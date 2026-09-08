@@ -57,6 +57,17 @@
 - [x] representative production `/avtopodbor/` smoke
 - [x] project marker `0.2.0`
 
+## Automated quality gates — 2026-09-09
+
+- [x] deterministic external-link checker с regression-тестами на dedup/403/404 behavior
+- [x] live external-link audit для generated custom-domain build
+- [x] axe-core WCAG A/AA gate для desktop всех публичных routes и representative mobile scenarios
+- [x] Lighthouse CI для главной и `/avtopodbor/`, 3 runs + `median-run`
+- [x] category budgets: performance `>= 0.85`, accessibility/best-practices/SEO `>= 0.95`
+- [x] metric budgets: LCP `<= 3000 ms`, CLS `<= 0.1`, TBT `<= 300 ms`
+- [x] private short-retention Lighthouse HTML/JSON artifacts в PR CI
+- [x] quality-gate RED → GREEN regression contracts
+
 ## Repository hygiene
 
 - [x] CI только PR/main push + manual diagnostic run
