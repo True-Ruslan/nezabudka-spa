@@ -33,17 +33,18 @@ test('uses SVG arrows instead of text glyphs across homepage actions', async ({ 
   await expect(page.locator('.mobile-contact svg[data-arrow-icon="up-right"]')).toHaveCount(1);
 });
 
-test('uses SVG navigation arrows on service detail pages', async ({ page }) => {
+test('uses SVG action arrows on service detail pages', async ({ page }) => {
   await page.goto('./avtopodbor/');
 
   expect(await page.locator('body').innerText()).not.toMatch(textArrowGlyphs);
 
-  await expect(
-    page.getByRole('link', { name: 'Все услуги' }).locator('svg[data-arrow-icon="left"]'),
-  ).toHaveCount(1);
+  await expect(page.getByRole('navigation', { name: 'Хлебные крошки' }).locator('svg')).toHaveCount(0);
   await expect(
     page.getByRole('link', { name: /Обсудить услугу/i }).locator('svg[data-arrow-icon="up-right"]'),
   ).toHaveCount(1);
+  await expect(
+    page.locator('.related-services svg[data-arrow-icon="up-right"]'),
+  ).toHaveCount(3);
 });
 
 test('directional SVGs stay decorative and cannot enter the accessibility tree', async ({ page }) => {

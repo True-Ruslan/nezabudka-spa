@@ -1,6 +1,6 @@
 # Project State
 
-Обновлено: 2026-09-08
+Обновлено: 2026-09-09
 
 ## Статус
 
@@ -25,6 +25,8 @@ Nepomka — статический коммерческий сайт автом�
 
 Page-specific SEO/content хранится в `src/data/service-pages.ts`; цены, режимы и краткие offer-условия остаются единственным источником истины в `src/data/site.ts`.
 
+Каждая из четырёх service pages теперь имеет semantic breadcrumb до главной и вычисляемый из `offers` блок `Другие услуги` со ссылками на три остальные detail pages. Отдельного дублирующего источника данных для этой навигации нет.
+
 ## Контакты и фактические данные
 
 В `src/data/site.ts` подтверждены и опубликованы:
@@ -43,7 +45,10 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - уникальные title/description/canonical для четырёх service pages;
 - Person/Offer JSON-LD на главной;
 - отдельный Service JSON-LD на detail pages без ложной фиксированной цены для услуг «от»;
-- Open Graph, Twitter Card, sitemap, robots.txt и web manifest;
+- BreadcrumbList JSON-LD синхронизирован с видимыми breadcrumbs четырёх service pages;
+- внутренние ссылки между четырьмя ключевыми service pages;
+- Open Graph, Twitter Card, sitemap и web manifest;
+- `robots.txt` генерируется build-time и публикует environment-aware URL актуального `sitemap-index.xml` для Project Pages и custom domain;
 - mobile horizontal-overflow regression checks;
 - base-path safety для Project Pages fallback и root custom domain.
 
@@ -53,14 +58,14 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - committed `package-lock.json`, установки через `npm ci`;
 - Astro check + static production build;
 - hash-gate утверждённых `danil-hero.webp` и `nepomka-logo.webp`;
-- `scripts/verify-static-build.mjs` проверяет generated HTML, локальные references, обязательные service outputs и canonical;
-- negative tests доказывают отказ verifier-а на broken reference и canonical drift;
-- Playwright desktop/mobile suite;
+- `scripts/verify-static-build.mjs` проверяет generated HTML, локальные references, обязательные service outputs/canonical, robots/sitemap contract, semantic breadcrumbs, BreadcrumbList и наличие related-service links;
+- negative tests доказывают отказ verifier-а на broken reference, canonical drift и неверный robots sitemap URL;
+- Playwright desktop/mobile suite проверяет видимые breadcrumbs, ровно три другие service routes и BreadcrumbList structured data;
 - ephemeral `publish: true` case-route smoke;
-- отдельные Project Pages и custom-domain assertions, включая sitemap/service canonical;
+- отдельные Project Pages и custom-domain assertions, включая sitemap/service canonical, robots, BreadcrumbList и related-service path safety;
 - CI запускается для PR в `main`, push в `main` и вручную; superseded runs отменяются через `concurrency`;
 - deploy запускается только по successful `workflow_run` CI для `main`;
-- production smoke проверяет главную, `/avtopodbor/` и реальный custom 404.
+- production smoke проверяет главную, `robots.txt`, `/avtopodbor/` с breadcrumb/BreadcrumbList/related link и реальный custom 404.
 
 ## Repository governance — фактическое состояние
 
@@ -93,7 +98,7 @@ Repository settings:
 - опубликовать первые реальные документированные кейсы;
 - при наличии разрешения добавить реальные отзывы/рабочие фотографии;
 - подключить privacy-friendly analytics только при появлении измерительной задачи;
-- проверить Google Search Console и Яндекс Вебмастер;
-- после release проверить индексирование sitemap/canonical/service pages.
+- зарегистрировать/проверить сайт в Google Search Console и Яндекс Вебмастере;
+- после release проверить фактическое индексирование sitemap, canonical и четырёх service pages.
 
 Финальный production status всегда сверяется по актуальному `main`, GitHub Actions и опубликованному сайту, а не только по этому документу.

@@ -4,32 +4,25 @@ import Footer from '../../components/Footer.astro';
 import Header from '../../components/Header.astro';
 import ServiceDetail from '../../components/ServiceDetail.astro';
 import { carSelectionPage as config } from '../../data/service-pages';
-import { brand, offers } from '../../data/site';
+import { offers } from '../../data/site';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildServiceStructuredData } from '../../lib/service-structured-data';
 
 const offer = offers.find((candidate) => candidate.id === config.offerId);
 if (!offer) throw new Error(`Missing offer for service page: ${config.offerId}`);
 
-const base = import.meta.env.BASE_URL;
-const serviceJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Service',
-  name: offer.title,
-  description: config.seoDescription,
-  areaServed: { '@type': 'City', name: 'Белгород' },
-  provider: {
-    '@type': 'Person',
-    name: brand.person,
-    alternateName: brand.name,
-    url: new URL(base, Astro.site).href,
-  },
-};
+const structuredData = buildServiceStructuredData({
+  offer,
+  config,
+  site: Astro.site,
+  base: import.meta.env.BASE_URL,
+});
 ---
 
 <BaseLayout
   title={config.seoTitle}
   description={config.seoDescription}
-  additionalStructuredData={serviceJsonLd}
+  additionalStructuredData={structuredData}
 >
   <Header />
   <main id="main">

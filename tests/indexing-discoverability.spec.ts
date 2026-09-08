@@ -1,0 +1,71 @@
+import { mkdir } from 'node:fs/promises';
+import { expect, test } from '@playwright/test';
+
+const services = [
+  { route: 'avtopodbor/', title: 'Подобрать автомобиль с пробегом' },
+  { route: 'proverka-avto/', title: 'Проверить автомобиль перед покупкой' },
+  { route: 'bronirovanie-plenkoy/', title: 'Защитить кузов бронеплёнкой' },
+  { route: 'tonirovka/', title: 'Затонировать автомобиль' },
+] as const;
+
+for (const current of services) {
+  test(`${current.route} exposes breadcrumb and three other service routes`, async ({ page }) => {
+    await page.goto(`./${current.route}`);
+
+    const breadcrumb = page.getByRole('navigation', { name: 'Хлебные крошки' });
+    await expect(breadcrumb.getByRole('link', { name: 'Главная' })).toHaveAttribute(
+      'href',
+      '/nezabudka-spa/',
+    );
+    await expect(breadcrumb.getByText(current.title, { exact: true })).toBeVisible();
+
+    const related = page.locator('.related-services');
+    const expectedOthers = services.filter((service) => service.route !== current.route);
+    await expect(related.locator('a')).toHaveCount(3);
+
+    for (const other of expectedOthers) {
+      await expect(related.getByRole('link', { name: new RegExp(other.title) })).toHaveAttribute(
+        'href',
+        `/nezabudka-spa/${other.route}`,
+      );
+    }
+    await expect(related.getByRole('link', { name: new RegExp(current.title) })).toHaveCount(0);
+
+    const scripts = await page.locator('script[type="application/ld+json"]').allTextContents();
+    const jsonLd = scripts.map((value) => JSON.parse(value));
+    const breadcrumbList = jsonLd.find((value) => value['@type'] === 'BreadcrumbList');
+
+    expect(breadcrumbList?.itemListElement).toEqual([
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Главная',
+        item: 'https://true-ruslan.github.io/nezabudka-spa/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: current.title,
+        item: `https://true-ruslan.github.io/nezabudka-spa/${current.route}`,
+      },
+    ]);
+  });
+}
+
+test('captures representative service page visual baseline', async ({ page }, testInfo) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./avtopodbor/');
+  await page.waitForLoadState('networkidle');
+
+  await expect(page.getByRole('navigation', { name: 'Хлебные крошки' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Другие услуги' })).toBeVisible();
+  expect(pageErrors).toEqual([]);
+
+  await mkdir('artifacts/screenshots', { recursive: true });
+  await page.screenshot({
+    path: `artifacts/screenshots/service-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+});

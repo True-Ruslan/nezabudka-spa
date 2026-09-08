@@ -4,6 +4,9 @@
 
 ### Changed
 
+- generated environment-aware `robots.txt` теперь публикует фактический `sitemap-index.xml` для Project Pages и production custom domain;
+- четыре service pages получили semantic breadcrumbs, BreadcrumbList structured data и ссылки на три другие ключевые услуги;
+- static verifier, CI и production smoke теперь блокируют drift robots/sitemap и regressions service discoverability;
 - текстовые directional glyphs `↗`, `→` и `←` в пользовательских CTA/навигации заменены на единый набор декоративных inline SVG icons, чтобы desktop/mobile rendering не зависел от системного шрифта или emoji substitution;
 - primary, secondary и back-навигация получили согласованные направления и лёгкое hover-движение с поддержкой `prefers-reduced-motion`;
 - основной messenger CTA переведён с VK на прямую Telegram-ссылку `https://t.me/+79045328772`, включая mobile sticky action и Person `sameAs`;

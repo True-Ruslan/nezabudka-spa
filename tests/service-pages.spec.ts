@@ -59,10 +59,7 @@ for (const service of servicePages) {
       `https://true-ruslan.github.io/nezabudka-spa/${service.route}`,
     );
     await expect(page.getByRole('heading', { level: 1, name: service.heading })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Все услуги' })).toHaveAttribute(
-      'href',
-      '/nezabudka-spa/#expertise',
-    );
+    await expect(page.getByRole('navigation', { name: 'Хлебные крошки' })).toBeVisible();
     await expect(page.getByRole('link', { name: /обсудить услугу/i })).toHaveAttribute(
       'href',
       '#contact',

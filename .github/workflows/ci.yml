@@ -92,6 +92,15 @@ jobs:
           mv /tmp/nepomka-index.html dist/index.html
           npm run verify:build
 
+          cp dist/robots.txt /tmp/nepomka-robots.txt
+          sed -i 's#Sitemap: .*#Sitemap: https://wrong.example/sitemap-index.xml#' dist/robots.txt
+          if npm run verify:build; then
+            echo 'Static verifier accepted an incorrect robots sitemap URL.' >&2
+            exit 1
+          fi
+          mv /tmp/nepomka-robots.txt dist/robots.txt
+          npm run verify:build
+
       - name: Verify project Pages build mode
         run: |
           grep -q 'https://true-ruslan.github.io/nezabudka-spa/' dist/index.html
@@ -99,6 +108,10 @@ jobs:
           grep -q '/nezabudka-spa/branding/nepomka-logo.webp' dist/index.html
           grep -q '/nezabudka-spa/branding/danil-hero.webp' dist/index.html
           test -f dist/404.html
+          test -f dist/robots.txt
+          grep -Fxq 'Sitemap: https://true-ruslan.github.io/nezabudka-spa/sitemap-index.xml' dist/robots.txt
+          grep -q '"@type":"BreadcrumbList"' dist/avtopodbor/index.html
+          grep -q 'href="/nezabudka-spa/proverka-avto/"' dist/avtopodbor/index.html
           test ! -e dist/cases/case-template/index.html
 
           for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
@@ -148,6 +161,10 @@ jobs:
           npm run build
           npm run verify:build
           grep -q 'https://danil.example.test/' dist/index.html
+          test -f dist/robots.txt
+          grep -Fxq 'Sitemap: https://danil.example.test/sitemap-index.xml' dist/robots.txt
+          grep -q '"@type":"BreadcrumbList"' dist/avtopodbor/index.html
+          grep -q 'href="/proverka-avto/"' dist/avtopodbor/index.html
 
           for route in avtopodbor proverka-avto bronirovanie-plenkoy tonirovka; do
             test -f "dist/$route/index.html"
