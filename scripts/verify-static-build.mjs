@@ -199,6 +199,25 @@ for (const route of serviceRoutes) {
   if (canonicalHref !== expectedCanonical) {
     errors.push(`${route} canonical is not ${expectedCanonical}`);
   }
+
+  const homeHref = basePath === '/' ? '/' : `${basePath}/`;
+  if (!html.includes('aria-label="Хлебные крошки"')) {
+    errors.push(`${route} is missing semantic breadcrumb navigation`);
+  }
+  if (!html.includes(`href="${homeHref}"`)) {
+    errors.push(`${route} breadcrumb does not link to configured home base`);
+  }
+  if (!html.includes('"@type":"BreadcrumbList"')) {
+    errors.push(`${route} is missing BreadcrumbList structured data`);
+  }
+
+  const relatedRoutes = serviceRoutes.filter((candidate) => candidate !== route);
+  for (const relatedRoute of relatedRoutes) {
+    const relatedHref = `${basePath === '/' ? '/' : `${basePath}/`}${relatedRoute}`;
+    if (!html.includes(`href="${relatedHref}"`)) {
+      errors.push(`${route} is missing related service link ${relatedHref}`);
+    }
+  }
 }
 
 if (errors.length > 0) {
