@@ -75,6 +75,9 @@
 
 ## Measurement / SEO — next
 
+- [x] environment-aware robots sitemap discovery
+- [x] service breadcrumbs + BreadcrumbList structured data
+- [x] internal related-service navigation for four key service pages
 - [ ] privacy-friendly analytics при появлении измерительной задачи
 - [ ] Google Search Console
 - [ ] Яндекс Вебмастер
