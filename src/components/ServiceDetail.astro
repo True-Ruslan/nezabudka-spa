@@ -12,12 +12,25 @@ interface Props {
 
 const { offer, config } = Astro.props;
 const base = import.meta.env.BASE_URL;
+const relatedOffers = offers.filter(
+  (candidate): candidate is Offer & { pagePath: string } =>
+    Boolean(candidate.pagePath) && candidate.id !== offer.id,
+);
+
+if (relatedOffers.length !== 3) {
+  throw new Error(`Expected exactly 3 related service pages for ${offer.id}`);
+}
 ---
 
 <article class="service-detail">
   <section class="service-hero">
     <div class="shell">
-      <a class="service-back" href={`${base}#expertise`}><ArrowIcon direction="left" /> <span>Все услуги</span></a>
+      <nav class="service-breadcrumb" aria-label="Хлебные крошки">
+        <ol>
+          <li><a href={base}>Главная</a></li>
+          <li aria-current="page">{offer.title}</li>
+        </ol>
+      </nav>
       <div class="service-hero__grid">
         <div class="service-hero__copy">
           <p class="eyeline">{offer.mode} · {offer.price}</p>
@@ -91,6 +104,28 @@ const base = import.meta.env.BASE_URL;
       </div>
     </div>
   </section>
+
+  <section
+    class="service-section section--soft related-services"
+    aria-labelledby="related-services-title"
+  >
+    <div class="shell">
+      <div class="section-heading">
+        <p class="section-heading__label">05 / ДАЛЬШЕ</p>
+        <h2 id="related-services-title">Другие услуги</h2>
+      </div>
+      <div class="related-services__grid">
+        {relatedOffers.map((candidate) => (
+          <a class="related-service" href={`${base}${candidate.pagePath}`}>
+            <span>{candidate.mode}</span>
+            <h3>{candidate.title}</h3>
+            <p>{candidate.price}</p>
+            <ArrowIcon direction="up-right" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
 </article>
 
 <style>
@@ -103,19 +138,31 @@ const base = import.meta.env.BASE_URL;
     border-bottom: 1px solid var(--line);
   }
 
-  .service-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+  .service-breadcrumb {
     margin-bottom: clamp(54px, 7vw, 92px);
     color: var(--steel);
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
   }
 
-  .service-back:hover {
+  .service-breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-breadcrumb li + li::before {
+    margin-right: 8px;
+    color: var(--steel);
+    content: '/';
+  }
+
+  .service-breadcrumb a:hover {
     color: var(--blue);
   }
 
@@ -261,6 +308,56 @@ const base = import.meta.env.BASE_URL;
     color: var(--steel);
   }
 
+  .related-services .section-heading {
+    margin-bottom: clamp(34px, 5vw, 58px);
+  }
+
+  .related-services__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+  }
+
+  .related-service {
+    position: relative;
+    min-width: 0;
+    padding: 28px 52px 32px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .related-service + .related-service {
+    padding-left: 28px;
+    border-left: 1px solid var(--line);
+  }
+
+  .related-service span,
+  .related-service p {
+    color: var(--steel);
+  }
+
+  .related-service span {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+  }
+
+  .related-service h3 {
+    max-width: 330px;
+    margin: 18px 0 28px;
+    font-size: clamp(22px, 2.2vw, 30px);
+    line-height: 1.08;
+  }
+
+  .related-service p {
+    margin: 0;
+  }
+
+  .related-service :global([data-arrow-icon]) {
+    position: absolute;
+    right: 20px;
+    bottom: 32px;
+  }
+
   @media (max-width: 820px) {
     .service-hero__grid,
     .service-columns {
@@ -274,6 +371,16 @@ const base = import.meta.env.BASE_URL;
 
     .service-summary {
       max-width: 620px;
+    }
+
+    .related-services__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .related-service,
+    .related-service + .related-service {
+      padding: 24px 42px 24px 0;
+      border-left: 0;
     }
   }
 
