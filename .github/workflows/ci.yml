@@ -17,7 +17,7 @@ concurrency:
 jobs:
   quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -216,6 +216,19 @@ jobs:
           AXE_SOURCE_PATH="$axe_source" \
             A11Y_BASE_URL=http://127.0.0.1:4322/ \
             node scripts/run-axe-audit.mjs
+
+      - name: Lighthouse performance and SEO budgets
+        id: lighthouse
+        run: npm run audit:lighthouse
+
+      - name: Upload Lighthouse reports
+        if: ${{ always() && github.event_name == 'pull_request' && steps.lighthouse.outcome != 'skipped' }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-report
+          path: artifacts/lighthouse/
+          if-no-files-found: warn
+          retention-days: 7
 
       - name: Upload visual baselines
         if: ${{ always() && github.event_name == 'pull_request' && steps.browser-tests.outcome != 'skipped' }}
