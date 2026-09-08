@@ -12,6 +12,7 @@
     "build": "astro build",
     "verify:build": "node scripts/verify-static-build.mjs",
     "preview": "astro preview",
+    "test:quality": "node --test tests/external-links.test.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
