@@ -6,7 +6,7 @@ interface Props {
   title?: string;
   description?: string;
   includeStructuredData?: boolean;
-  additionalStructuredData?: Record<string, unknown> | null;
+  additionalStructuredData?: readonly Record<string, unknown>[] | null;
 }
 
 const {
@@ -82,13 +82,9 @@ const personJsonLd = {
       )
     }
     {
-      additionalStructuredData && (
-        <script
-          type="application/ld+json"
-          is:inline
-          set:html={JSON.stringify(additionalStructuredData)}
-        />
-      )
+      additionalStructuredData?.map((item) => (
+        <script type="application/ld+json" is:inline set:html={JSON.stringify(item)} />
+      ))
     }
   </head>
   <body>
