@@ -87,6 +87,9 @@ jobs:
           grep -q 'Непомнящий Данил Александрович' /tmp/nepomka-home.html
           grep -q 'https://t.me/+79045328772' /tmp/nepomka-home.html
           grep -q '/branding/max-mark.svg' /tmp/nepomka-home.html
+          grep -q 'data-lead-brief' /tmp/nepomka-home.html
+          grep -q 'Подготовить сообщение' /tmp/nepomka-home.html
+          grep -q 'Данные остаются в браузере' /tmp/nepomka-home.html
           if grep -q 'https://vk.ru/boypocek' /tmp/nepomka-home.html; then
             echo 'Legacy VK contact is still present in production homepage.' >&2
             exit 1
@@ -111,6 +114,9 @@ jobs:
           grep -q 'aria-label="Хлебные крошки"' /tmp/nepomka-avtopodbor.html
           grep -q '"@type":"BreadcrumbList"' /tmp/nepomka-avtopodbor.html
           grep -q 'href="/proverka-avto/"' /tmp/nepomka-avtopodbor.html
+          grep -q 'href="#lead-brief"' /tmp/nepomka-avtopodbor.html
+          grep -q 'data-initial-offer="car-selection"' /tmp/nepomka-avtopodbor.html
+          grep -q 'Скопировать и открыть Telegram' /tmp/nepomka-avtopodbor.html
 
           missing_url="${PAGE_URL%/}/__nepomka-v020-404-smoke__"
           status=$(curl --location --silent --show-error \
