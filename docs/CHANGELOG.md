@@ -4,6 +4,9 @@
 
 ### Changed
 
+- в contact flow добавлен компактный client-side бриф: пользователь выбирает услугу, указывает автомобиль и вопрос, после чего сайт формирует и копирует фактический текст перед открытием Telegram; данные не отправляются на backend и не сохраняются;
+- на четырёх service pages текущая услуга предвыбирается автоматически, а hero CTA `Обсудить услугу` ведёт непосредственно к раскрытому `#lead-brief` вместо общего начала contact section;
+- expanded lead brief покрыт desktop/mobile Playwright-проверками, keyboard Escape/focus behavior, horizontal-overflow regression и отдельными visual artifacts; production smoke теперь проверяет наличие брифа, предвыбор автоподбора и CTA routing;
 - generated environment-aware `robots.txt` теперь публикует фактический `sitemap-index.xml` для Project Pages и production custom domain;
 - четыре service pages получили semantic breadcrumbs, BreadcrumbList structured data и ссылки на три другие ключевые услуги;
 - static verifier, CI и production smoke теперь блокируют drift robots/sitemap и regressions service discoverability;
@@ -18,6 +21,7 @@
 
 ### Quality / integrity
 
+- lead brief реализован через два RED → GREEN цикла: сначала отсутствие самого брифа/предвыбора/копирования, затем отдельный regression contract для routing service CTA в `#lead-brief`;
 - external-link checker покрыт RED → GREEN unit regression tests, включая deduplication, anti-bot status и реальный `404`;
 - Lighthouse configuration contract зафиксирован unit test-ом, чтобы monitored routes, run count, aggregation mode и budgets не ослаблялись случайно;
 - root/custom-domain preview в accessibility/Lighthouse gates запускается с тем же `BASE_PATH`, что и проверяемый build, исключая ложные failures из-за конфигурационного drift;
