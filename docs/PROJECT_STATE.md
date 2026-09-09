@@ -27,6 +27,19 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 
 Каждая из четырёх service pages теперь имеет semantic breadcrumb до главной и вычисляемый из `offers` блок `Другие услуги` со ссылками на три остальные detail pages. Отдельного дублирующего источника данных для этой навигации нет.
 
+## Contact / conversion flow
+
+В contact section остаются прямые каналы Telegram, телефон, MAX-индикатор у номера и Instagram. Дополнительно встроен компактный `LeadBrief.astro`, который работает полностью в браузере и не требует backend:
+
+- пользователь выбирает одну из шести услуг;
+- указывает автомобиль, при необходимости год/пробег и свой вопрос;
+- сайт формирует фактический текст сообщения;
+- при поддержке Clipboard API текст копируется и одновременно открывается существующая Telegram-ссылка;
+- при невозможности автоматического копирования подготовленный текст показывается как fallback;
+- сайт не отправляет и не сохраняет введённые данные.
+
+На четырёх service pages текущая услуга передаётся в `Contact` как `initialOfferId`, поэтому она предвыбрана автоматически. Hero CTA `Обсудить услугу` ведёт в `#lead-brief`; hash открывает `<details>` с брифом. На главной бриф по умолчанию остаётся свёрнутым, чтобы не перегружать основной contact flow.
+
 ## Контакты и фактические данные
 
 В `src/data/site.ts` подтверждены и опубликованы:
@@ -50,7 +63,8 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - Open Graph, Twitter Card, sitemap и web manifest;
 - `robots.txt` генерируется build-time и публикует environment-aware URL актуального `sitemap-index.xml` для Project Pages и custom domain;
 - mobile horizontal-overflow regression checks;
-- base-path safety для Project Pages fallback и root custom domain.
+- base-path safety для Project Pages fallback и root custom domain;
+- lead brief использует явные `label for/id`, native form validation, live status, Escape для закрытия и возврат focus на summary.
 
 ## Build / CI / deploy
 
@@ -61,6 +75,7 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - `scripts/verify-static-build.mjs` проверяет generated HTML, локальные references, обязательные service outputs/canonical, robots/sitemap contract, semantic breadcrumbs, BreadcrumbList и наличие related-service links;
 - negative tests доказывают отказ verifier-а на broken reference, canonical drift и неверный robots sitemap URL;
 - Playwright desktop/mobile suite проверяет видимые breadcrumbs, ровно три другие service routes и BreadcrumbList structured data;
+- lead brief отдельно покрыт desktop/mobile regression tests: наличие всех шести offers, service preselection, service CTA routing, clipboard message contract, Telegram destination, Escape/focus, отсутствие horizontal overflow и visual artifacts раскрытой формы;
 - deterministic external-link checker дедуплицирует `http(s)` links, блокирует реальные HTTP/network failures и не создаёт ложные падения на `401/403/429` access/anti-bot responses;
 - axe-core gate проверяет WCAG A/AA на главной и всех четырёх service pages в desktop, плюс representative homepage/service scenarios в mobile;
 - Lighthouse CI `0.15.1` выполняет по три mobile-style прогона главной и `/avtopodbor/`, использует `median-run` и блокирует performance ниже `0.85`, accessibility/best-practices/SEO ниже `0.95`, LCP выше `3000 ms`, CLS выше `0.1` и TBT выше `300 ms`;
@@ -69,7 +84,7 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - отдельные Project Pages и custom-domain assertions, включая sitemap/service canonical, robots, BreadcrumbList и related-service path safety;
 - CI запускается для PR в `main`, push в `main` и вручную; superseded runs отменяются через `concurrency`;
 - deploy запускается только по successful `workflow_run` CI для `main`;
-- production smoke проверяет главную, `robots.txt`, `/avtopodbor/` с breadcrumb/BreadcrumbList/related link и реальный custom 404.
+- production smoke проверяет главную, `robots.txt`, `/avtopodbor/` с breadcrumb/BreadcrumbList/related link, lead brief markers и реальный custom 404.
 
 ## Repository governance — фактическое состояние
 
