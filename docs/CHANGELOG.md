@@ -14,7 +14,7 @@
 - CI получил deterministic external-link gate для generated HTML: реальные `404`/network failures блокируют merge, а `401`/`403`/`429` от anti-bot/rate-limit механизмов фиксируются без ложного падения;
 - добавлен axe-core WCAG A/AA audit для всех ключевых desktop routes и representative mobile scenarios;
 - добавлен Lighthouse CI для главной и `/avtopodbor/`: по три запуска с `median-run`, минимальные budgets `performance >= 0.85`, `accessibility/best-practices/SEO >= 0.95`, `LCP <= 3000 ms`, `CLS <= 0.1`, `TBT <= 300 ms`;
-- Lighthouse HTML/JSON reports сохраняются как short-lived private CI artifact; visual baseline upload больше не создаёт дополнительный failure, если Browser tests не запускались из-за более раннего gate.
+- Lighthouse HTML/JSON reports сохраняются как short-lived GitHub Actions artifact без внешнего LHCI public upload; visual baseline upload больше не создаёт дополнительный failure, если Browser tests не запускались из-за более раннего gate.
 
 ### Quality / integrity
 
