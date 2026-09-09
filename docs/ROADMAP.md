@@ -65,7 +65,7 @@
 - [x] Lighthouse CI для главной и `/avtopodbor/`, 3 runs + `median-run`
 - [x] category budgets: performance `>= 0.85`, accessibility/best-practices/SEO `>= 0.95`
 - [x] metric budgets: LCP `<= 3000 ms`, CLS `<= 0.1`, TBT `<= 300 ms`
-- [x] private short-retention Lighthouse HTML/JSON artifacts в PR CI
+- [x] short-retention Lighthouse HTML/JSON GitHub Actions artifacts без внешнего LHCI public upload
 - [x] quality-gate RED → GREEN regression contracts
 
 ## Repository hygiene
