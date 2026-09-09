@@ -57,6 +57,19 @@
 - [x] representative production `/avtopodbor/` smoke
 - [x] project marker `0.2.0`
 
+## Conversion flow — 2026-09-09
+
+- [x] компактный client-side lead brief без backend и persistent storage
+- [x] единый список шести услуг из `src/data/site.ts`, без дублирования offer-данных
+- [x] service-page preselection текущего offer через typed `initialOfferId`
+- [x] hero CTA четырёх service pages ведёт прямо в раскрываемый `#lead-brief`
+- [x] формирование factual message: услуга, автомобиль, optional год/пробег, вопрос
+- [x] Clipboard API + видимый fallback, если автоматическое копирование недоступно
+- [x] Telegram остаётся прямым destination, без client-side bot token или скрытого backend
+- [x] explicit labels, native validation, live status, Escape/focus behavior
+- [x] desktop/mobile functional tests, overflow regression и visual artifacts раскрытого брифа
+- [x] production smoke для homepage lead brief и preselected `/avtopodbor/` flow
+
 ## Automated quality gates — 2026-09-09
 
 - [x] deterministic external-link checker с regression-тестами на dedup/403/404 behavior
