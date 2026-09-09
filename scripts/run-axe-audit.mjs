@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
 import { chromium } from '@playwright/test';
+import { scenarios, wcagTags } from './axe-audit-config.mjs';
 
 const axeSourcePath = process.env.AXE_SOURCE_PATH?.trim();
 if (!axeSourcePath) {
@@ -9,33 +10,6 @@ if (!axeSourcePath) {
 
 const baseUrl = new URL(process.env.A11Y_BASE_URL?.trim() || 'http://127.0.0.1:4322/');
 const axeSource = await readFile(axeSourcePath, 'utf8');
-const wcagTags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'];
-
-const desktopRoutes = [
-  '/',
-  '/avtopodbor/',
-  '/proverka-avto/',
-  '/bronirovanie-plenkoy/',
-  '/tonirovka/',
-];
-
-const scenarios = [
-  ...desktopRoutes.map((route) => ({
-    name: `desktop ${route}`,
-    route,
-    viewport: { width: 1440, height: 1100 },
-  })),
-  {
-    name: 'mobile /',
-    route: '/',
-    viewport: { width: 390, height: 844 },
-  },
-  {
-    name: 'mobile /avtopodbor/',
-    route: '/avtopodbor/',
-    viewport: { width: 390, height: 844 },
-  },
-];
 
 const browser = await chromium.launch({ headless: true });
 const failures = [];
