@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 import { expect, test } from '@playwright/test';
 
 const telegramUrl = 'https://t.me/+79045328772';
@@ -12,6 +13,19 @@ test('keeps the lead brief compact on the homepage and sources all six offers', 
 
   const service = brief.getByLabel('Услуга');
   await expect(service.locator('option')).toHaveCount(6);
+});
+
+test('service CTA opens the matching preselected lead brief', async ({ page }) => {
+  await page.goto('./avtopodbor/');
+
+  const cta = page.getByRole('link', { name: /обсудить услугу/i });
+  await expect(cta).toHaveAttribute('href', '#lead-brief');
+  await cta.click();
+
+  await expect(page).toHaveURL(/#lead-brief$/);
+  const brief = page.locator('[data-lead-brief]');
+  await expect(brief).toHaveAttribute('open', '');
+  await expect(brief.getByLabel('Услуга')).toHaveValue('car-selection');
 });
 
 test('preselects and opens the matching service brief on a service page', async ({ page }) => {
@@ -73,4 +87,31 @@ test('Escape closes an expanded brief and returns focus to its summary', async (
 
   await expect(brief).not.toHaveAttribute('open', '');
   await expect(summary).toBeFocused();
+});
+
+test('expanded lead brief stays within the viewport and captures a visual regression artifact', async ({
+  page,
+}, testInfo) => {
+  const pageErrors: string[] = [];
+  page.on('pageerror', (error) => pageErrors.push(error.message));
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.goto('./avtopodbor/#lead-brief');
+  await page.waitForLoadState('networkidle');
+
+  const brief = page.locator('[data-lead-brief]');
+  await expect(brief).toHaveAttribute('open', '');
+  await expect(brief).toBeInViewport();
+  expect(pageErrors).toEqual([]);
+
+  const dimensions = await page.evaluate(() => ({
+    scrollWidth: document.documentElement.scrollWidth,
+    clientWidth: document.documentElement.clientWidth,
+  }));
+  expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1);
+
+  await mkdir('artifacts/screenshots', { recursive: true });
+  await page.screenshot({
+    path: `artifacts/screenshots/lead-brief-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
 });
