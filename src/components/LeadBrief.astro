@@ -23,45 +23,48 @@ if (initialOfferId && !offers.some((offer) => offer.id === initialOfferId)) {
     </p>
 
     <form class="lead-brief__form" data-lead-form>
-      <label>
-        <span>Услуга</span>
-        <select name="service" required>
+      <div class="lead-brief__field">
+        <label for="lead-brief-service">Услуга</label>
+        <select id="lead-brief-service" name="service" required>
           {offers.map((offer) => (
             <option value={offer.id} selected={offer.id === initialOfferId}>{offer.title}</option>
           ))}
         </select>
-      </label>
+      </div>
 
-      <label>
-        <span>Автомобиль</span>
+      <div class="lead-brief__field">
+        <label for="lead-brief-vehicle">Автомобиль</label>
         <input
+          id="lead-brief-vehicle"
           name="vehicle"
           type="text"
           autocomplete="off"
           placeholder="Например, BMW 320i"
           required
         />
-      </label>
+      </div>
 
-      <label>
-        <span>Год / пробег</span>
+      <div class="lead-brief__field">
+        <label for="lead-brief-year-mileage">Год / пробег</label>
         <input
+          id="lead-brief-year-mileage"
           name="yearMileage"
           type="text"
           autocomplete="off"
           placeholder="Например, 2019 · 98 000 км"
         />
-      </label>
+      </div>
 
-      <label class="lead-brief__question">
-        <span>Вопрос</span>
+      <div class="lead-brief__field lead-brief__question">
+        <label for="lead-brief-question">Вопрос</label>
         <textarea
+          id="lead-brief-question"
           name="question"
           rows="4"
           placeholder="Коротко опишите задачу и что для вас особенно важно"
           required
         ></textarea>
-      </label>
+      </div>
 
       <p class="lead-brief__privacy" id="lead-brief-privacy">
         Данные остаются в браузере: сайт ничего не отправляет и не сохраняет.
@@ -93,7 +96,10 @@ if (initialOfferId && !offers.some((offer) => offer.id === initialOfferId)) {
 </details>
 
 <script>
-  const ensureEnding = (value: string) => (/[^\s.!?][.!?]\s*$/.test(value) ? value.trim() : `${value.trim()}.`);
+  const ensureEnding = (value: string) => {
+    const trimmed = value.trim();
+    return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+  };
 
   document.querySelectorAll<HTMLDetailsElement>('[data-lead-brief]').forEach((brief) => {
     const summary = brief.querySelector<HTMLElement>('summary');
@@ -236,13 +242,13 @@ if (initialOfferId && !offers.some((offer) => offer.id === initialOfferId)) {
     gap: 16px;
   }
 
-  .lead-brief label {
+  .lead-brief__field {
     display: grid;
     min-width: 0;
     gap: 8px;
   }
 
-  .lead-brief label > span {
+  .lead-brief__field > label {
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.1em;
