@@ -51,7 +51,7 @@ test('Lighthouse enforces explicit category and Core Web Vitals budgets', () => 
   ]);
 });
 
-test('Lighthouse reports remain private CI artifacts', () => {
+test('Lighthouse reports stay on filesystem for GitHub Actions artifact upload', () => {
   assert.equal(config.ci.upload.target, 'filesystem');
   assert.equal(config.ci.upload.outputDir, './artifacts/lighthouse');
 });
