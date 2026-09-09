@@ -61,6 +61,10 @@ Page-specific SEO/content хранится в `src/data/service-pages.ts`; це�
 - `scripts/verify-static-build.mjs` проверяет generated HTML, локальные references, обязательные service outputs/canonical, robots/sitemap contract, semantic breadcrumbs, BreadcrumbList и наличие related-service links;
 - negative tests доказывают отказ verifier-а на broken reference, canonical drift и неверный robots sitemap URL;
 - Playwright desktop/mobile suite проверяет видимые breadcrumbs, ровно три другие service routes и BreadcrumbList structured data;
+- deterministic external-link checker дедуплицирует `http(s)` links, блокирует реальные HTTP/network failures и не создаёт ложные падения на `401/403/429` access/anti-bot responses;
+- axe-core gate проверяет WCAG A/AA на главной и всех четырёх service pages в desktop, плюс representative homepage/service scenarios в mobile;
+- Lighthouse CI `0.15.1` выполняет по три mobile-style прогона главной и `/avtopodbor/`, использует `median-run` и блокирует performance ниже `0.85`, accessibility/best-practices/SEO ниже `0.95`, LCP выше `3000 ms`, CLS выше `0.1` и TBT выше `300 ms`;
+- Lighthouse не использует внешний temporary-public-storage: HTML/JSON reports сохраняются в filesystem и затем прикладываются как короткоживущий GitHub Actions artifact с политикой доступа репозитория;
 - ephemeral `publish: true` case-route smoke;
 - отдельные Project Pages и custom-domain assertions, включая sitemap/service canonical, robots, BreadcrumbList и related-service path safety;
 - CI запускается для PR в `main`, push в `main` и вручную; superseded runs отменяются через `concurrency`;

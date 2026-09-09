@@ -12,6 +12,9 @@
     "build": "astro build",
     "verify:build": "node scripts/verify-static-build.mjs",
     "preview": "astro preview",
+    "audit:links": "node scripts/check-external-links.mjs",
+    "audit:lighthouse": "npm exec --yes --package=@lhci/cli@0.15.1 -- lhci autorun --config=./lighthouserc.cjs",
+    "test:quality": "node --test tests/external-links.test.mjs tests/axe-config.test.mjs tests/lighthouse-config.test.mjs",
     "test:e2e": "playwright test"
   },
   "dependencies": {
