@@ -1,0 +1,349 @@
+---
+import ArrowIcon from './ArrowIcon.astro';
+import { contact, offers } from '../data/site';
+
+type OfferId = (typeof offers)[number]['id'];
+
+interface Props {
+  initialOfferId?: OfferId | null;
+}
+
+const { initialOfferId = null } = Astro.props;
+
+if (initialOfferId && !offers.some((offer) => offer.id === initialOfferId)) {
+  throw new Error(`Unknown lead brief offer: ${initialOfferId}`);
+}
+---
+
+<details id="lead-brief" class="lead-brief" data-lead-brief data-initial-offer={initialOfferId ?? ''}>
+  <summary>Подготовить сообщение</summary>
+  <div class="lead-brief__body">
+    <p class="lead-brief__intro">
+      Заполните короткий бриф — сайт соберёт текст, который можно сразу отправить Данилу.
+    </p>
+
+    <form class="lead-brief__form" data-lead-form>
+      <div class="lead-brief__field">
+        <label for="lead-brief-service">Услуга</label>
+        <select id="lead-brief-service" name="service" required>
+          {offers.map((offer) => (
+            <option value={offer.id} selected={offer.id === initialOfferId}>{offer.title}</option>
+          ))}
+        </select>
+      </div>
+
+      <div class="lead-brief__field">
+        <label for="lead-brief-vehicle">Автомобиль</label>
+        <input
+          id="lead-brief-vehicle"
+          name="vehicle"
+          type="text"
+          autocomplete="off"
+          placeholder="Например, BMW 320i"
+          required
+        />
+      </div>
+
+      <div class="lead-brief__field">
+        <label for="lead-brief-year-mileage">Год / пробег</label>
+        <input
+          id="lead-brief-year-mileage"
+          name="yearMileage"
+          type="text"
+          autocomplete="off"
+          placeholder="Например, 2019 · 98 000 км"
+        />
+      </div>
+
+      <div class="lead-brief__field lead-brief__question">
+        <label for="lead-brief-question">Вопрос</label>
+        <textarea
+          id="lead-brief-question"
+          name="question"
+          rows="4"
+          placeholder="Коротко опишите задачу и что для вас особенно важно"
+          required
+        ></textarea>
+      </div>
+
+      <p class="lead-brief__privacy" id="lead-brief-privacy">
+        Данные остаются в браузере: сайт ничего не отправляет и не сохраняет.
+      </p>
+
+      <textarea
+        class="lead-brief__fallback"
+        data-lead-preview
+        rows="6"
+        readonly
+        hidden
+        aria-label="Подготовленный текст сообщения"
+      ></textarea>
+
+      <div class="lead-brief__actions">
+        <a
+          class="button button--light"
+          data-lead-action
+          href={contact.telegram}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Скопировать и открыть Telegram <ArrowIcon direction="up-right" />
+        </a>
+        <p class="lead-brief__status" data-lead-status role="status" aria-live="polite"></p>
+      </div>
+    </form>
+  </div>
+</details>
+
+<script>
+  const ensureEnding = (value: string) => {
+    const trimmed = value.trim();
+    return /[.!?]$/.test(trimmed) ? trimmed : `${trimmed}.`;
+  };
+
+  document.querySelectorAll<HTMLDetailsElement>('[data-lead-brief]').forEach((brief) => {
+    const summary = brief.querySelector<HTMLElement>('summary');
+    const form = brief.querySelector<HTMLFormElement>('[data-lead-form]');
+    const service = form?.elements.namedItem('service');
+    const vehicle = form?.elements.namedItem('vehicle');
+    const yearMileage = form?.elements.namedItem('yearMileage');
+    const question = form?.elements.namedItem('question');
+    const action = brief.querySelector<HTMLAnchorElement>('[data-lead-action]');
+    const status = brief.querySelector<HTMLElement>('[data-lead-status]');
+    const preview = brief.querySelector<HTMLTextAreaElement>('[data-lead-preview]');
+
+    if (
+      !summary ||
+      !form ||
+      !(service instanceof HTMLSelectElement) ||
+      !(vehicle instanceof HTMLInputElement) ||
+      !(yearMileage instanceof HTMLInputElement) ||
+      !(question instanceof HTMLTextAreaElement) ||
+      !action ||
+      !status ||
+      !preview
+    ) {
+      return;
+    }
+
+    const syncHash = () => {
+      if (window.location.hash === '#lead-brief') brief.open = true;
+    };
+
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+
+    brief.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape' || !brief.open) return;
+      event.preventDefault();
+      brief.open = false;
+      summary.focus();
+    });
+
+    action.addEventListener('click', (event) => {
+      if (!form.reportValidity()) {
+        event.preventDefault();
+        return;
+      }
+
+      const serviceTitle = service.selectedOptions[0]?.textContent?.trim();
+      if (!serviceTitle) {
+        event.preventDefault();
+        return;
+      }
+
+      const lines = [
+        `Здравствуйте! Хочу обсудить услугу: ${serviceTitle}.`,
+        `Автомобиль: ${ensureEnding(vehicle.value)}`,
+      ];
+
+      if (yearMileage.value.trim()) {
+        lines.push(`Год / пробег: ${ensureEnding(yearMileage.value)}`);
+      }
+
+      lines.push(`Вопрос: ${ensureEnding(question.value)}`);
+      const message = lines.join('\n');
+      preview.value = message;
+      preview.hidden = true;
+      status.textContent = 'Копирую текст…';
+
+      if (!navigator.clipboard?.writeText) {
+        preview.hidden = false;
+        status.textContent = 'Не удалось скопировать автоматически. Текст подготовлен ниже.';
+        return;
+      }
+
+      void navigator.clipboard.writeText(message).then(
+        () => {
+          status.textContent = 'Текст скопирован. Вставьте его в открывшийся чат Telegram.';
+        },
+        () => {
+          preview.hidden = false;
+          status.textContent = 'Не удалось скопировать автоматически. Текст подготовлен ниже.';
+        },
+      );
+    });
+  });
+</script>
+
+<style>
+  .lead-brief {
+    margin-top: 22px;
+    border-top: 1px solid rgb(255 255 255 / 28%);
+    border-bottom: 1px solid rgb(255 255 255 / 28%);
+  }
+
+  .lead-brief summary {
+    position: relative;
+    padding: 20px 34px 20px 0;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    list-style: none;
+    text-transform: uppercase;
+  }
+
+  .lead-brief summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .lead-brief summary::after {
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    font-size: 20px;
+    content: '+';
+    transform: translateY(-50%);
+  }
+
+  .lead-brief[open] summary::after {
+    content: '−';
+  }
+
+  .lead-brief__body {
+    padding: 2px 0 24px;
+  }
+
+  .lead-brief__intro,
+  .lead-brief__privacy,
+  .lead-brief__status {
+    color: rgb(255 255 255 / 76%);
+  }
+
+  .lead-brief__intro {
+    margin: 0 0 22px;
+    line-height: 1.55;
+  }
+
+  .lead-brief__form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .lead-brief__field {
+    display: grid;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .lead-brief__field > label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .lead-brief input,
+  .lead-brief select,
+  .lead-brief textarea {
+    width: 100%;
+    min-width: 0;
+    border: 1px solid rgb(255 255 255 / 34%);
+    border-radius: 0;
+    outline: 0;
+    color: var(--white);
+    background: rgb(0 0 0 / 8%);
+    font: inherit;
+  }
+
+  .lead-brief input,
+  .lead-brief select {
+    min-height: 48px;
+    padding: 10px 12px;
+  }
+
+  .lead-brief textarea {
+    min-height: 112px;
+    padding: 12px;
+    resize: vertical;
+  }
+
+  .lead-brief select option {
+    color: var(--ink);
+    background: var(--white);
+  }
+
+  .lead-brief input::placeholder,
+  .lead-brief textarea::placeholder {
+    color: rgb(255 255 255 / 54%);
+  }
+
+  .lead-brief input:focus-visible,
+  .lead-brief select:focus-visible,
+  .lead-brief textarea:focus-visible {
+    border-color: var(--white);
+    box-shadow: 0 0 0 2px rgb(255 255 255 / 24%);
+  }
+
+  .lead-brief__question,
+  .lead-brief__privacy,
+  .lead-brief__fallback,
+  .lead-brief__actions {
+    grid-column: 1 / -1;
+  }
+
+  .lead-brief__privacy {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .lead-brief__fallback {
+    margin-top: 2px;
+  }
+
+  .lead-brief__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 2px;
+  }
+
+  .lead-brief__status {
+    min-height: 20px;
+    margin: 0;
+    font-size: 13px;
+  }
+
+  @media (max-width: 540px) {
+    .lead-brief__form {
+      grid-template-columns: 1fr;
+    }
+
+    .lead-brief__question,
+    .lead-brief__privacy,
+    .lead-brief__fallback,
+    .lead-brief__actions {
+      grid-column: auto;
+    }
+
+    .lead-brief__actions .button {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>

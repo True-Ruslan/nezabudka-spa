@@ -1,6 +1,15 @@
 ---
 import ArrowIcon from './ArrowIcon.astro';
-import { contact } from '../data/site';
+import LeadBrief from './LeadBrief.astro';
+import { contact, offers } from '../data/site';
+
+type OfferId = (typeof offers)[number]['id'];
+
+interface Props {
+  initialOfferId?: OfferId | null;
+}
+
+const { initialOfferId = null } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 <section class="contact-section" id="contact" aria-labelledby="contact-title">
@@ -14,6 +23,7 @@ const base = import.meta.env.BASE_URL;
       <a class="button button--light" href={contact.telegram} target="_blank" rel="noopener noreferrer">
         Написать в Telegram <ArrowIcon direction="up-right" />
       </a>
+      <LeadBrief {initialOfferId} />
       <div class="contact-phone-row" data-contact-phone-row>
         <a class="contact-phone" href={`tel:${contact.phone}`}>+7 904 532-87-72</a>
         <span class="contact-max" title="MAX доступен по этому номеру">

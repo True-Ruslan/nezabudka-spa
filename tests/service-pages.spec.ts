@@ -62,7 +62,7 @@ for (const service of servicePages) {
     await expect(page.getByRole('navigation', { name: 'Хлебные крошки' })).toBeVisible();
     await expect(page.getByRole('link', { name: /обсудить услугу/i })).toHaveAttribute(
       'href',
-      '#contact',
+      '#lead-brief',
     );
 
     const jsonLdScripts = await page.locator('script[type="application/ld+json"]').allTextContents();
