@@ -27,7 +27,7 @@ const structuredData = buildServiceStructuredData({
   <Header />
   <main id="main">
     <ServiceDetail {offer} {config} />
-    <Contact />
+    <Contact initialOfferId={offer.id} />
   </main>
   <Footer />
 </BaseLayout>
