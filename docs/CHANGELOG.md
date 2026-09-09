@@ -10,7 +10,18 @@
 - текстовые directional glyphs `↗`, `→` и `←` в пользовательских CTA/навигации заменены на единый набор декоративных inline SVG icons, чтобы desktop/mobile rendering не зависел от системного шрифта или emoji substitution;
 - primary, secondary и back-навигация получили согласованные направления и лёгкое hover-движение с поддержкой `prefers-reduced-motion`;
 - основной messenger CTA переведён с VK на прямую Telegram-ссылку `https://t.me/+79045328772`, включая mobile sticky action и Person `sameAs`;
-- рядом с телефоном добавлен локально сохранённый официальный знак MAX как некликабельный индикатор доступности номера; неподтверждённая персональная MAX-ссылка не публикуется.
+- рядом с телефоном добавлен локально сохранённый официальный знак MAX как некликабельный индикатор доступности номера; неподтверждённая персональная MAX-ссылка не публикуется;
+- CI получил deterministic external-link gate для generated HTML: реальные `404`/network failures блокируют merge, а `401`/`403`/`429` от anti-bot/rate-limit механизмов фиксируются без ложного падения;
+- добавлен axe-core WCAG A/AA audit для всех ключевых desktop routes и representative mobile scenarios;
+- добавлен Lighthouse CI для главной и `/avtopodbor/`: по три запуска с `median-run`, минимальные budgets `performance >= 0.85`, `accessibility/best-practices/SEO >= 0.95`, `LCP <= 3000 ms`, `CLS <= 0.1`, `TBT <= 300 ms`;
+- Lighthouse HTML/JSON reports сохраняются как short-lived private CI artifact; visual baseline upload больше не создаёт дополнительный failure, если Browser tests не запускались из-за более раннего gate.
+
+### Quality / integrity
+
+- external-link checker покрыт RED → GREEN unit regression tests, включая deduplication, anti-bot status и реальный `404`;
+- Lighthouse configuration contract зафиксирован unit test-ом, чтобы monitored routes, run count, aggregation mode и budgets не ослаблялись случайно;
+- root/custom-domain preview в accessibility/Lighthouse gates запускается с тем же `BASE_PATH`, что и проверяемый build, исключая ложные failures из-за конфигурационного drift;
+- representative Lighthouse baseline на CI для главной и `/avtopodbor/` достиг `1.00` по performance/accessibility/best-practices/SEO; representative LCP около `1.51 s` и `1.13 s`, CLS `0`, TBT `0`.
 
 ## 0.2.0 — 2026-09-07
 
